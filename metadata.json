@@ -1,0 +1,8 @@
+{
+  "name": "AMANI JUNIOR ACADEMY",
+  "description": "Official institutional portal and web platform for Amani Junior Academy & JSS in Mazeras, Kenya, featuring fee structure management, academic PDF assignment distribution, student records, and admissions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

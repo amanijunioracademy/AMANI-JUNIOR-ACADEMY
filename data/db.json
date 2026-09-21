@@ -1,0 +1,2884 @@
+{
+  "settings": {
+    "schoolName": "AMANI JUNIOR ACADEMY AND JSS",
+    "motto": "STRIVE TO ACHIEVE",
+    "postalAddress": "P.O. BOX 93-80114, MAZERAS, KENYA",
+    "location": "Mazeras Commercial Town, Off Mombasa-Nairobi Highway, Kilifi County, Kenya",
+    "directorName": "CONSTANCE MWAKA POLE",
+    "directorPhone": "0718540922",
+    "headteacherName": "NADHIRI CHACHA SALIM",
+    "headteacherPhone": "0114623408",
+    "deputyHeadteacherName": "VITALICE ODHIAMBO",
+    "deputyHeadteacherPhone": "0746529712",
+    "ictTeacherName": "VITALICE ODHIAMBO",
+    "email": "amanijacademy@gmail.com",
+    "officeHours": "Monday – Friday: 7:00 AM – 5:00 PM | Saturday: 8:00 AM – 1:00 PM",
+    "logoUrl": "/amani_logo.jpg",
+    "heroImageUrl": "/amani_hero.jpg",
+    "ictImageUrl": "/amani_ict.jpg",
+    "primaryColor": "#0F1E36",
+    "accentGold": "#D97706",
+    "accentGreen": "#059669",
+    "smsProvider": {
+      "providerName": "AfricasTalking / Kenya Bulk SMS",
+      "senderId": "AMANI_ACAD",
+      "apiKey": "AT_PROD_AMANI_2026_SECURE",
+      "active": true,
+      "notifyPhoneNumbers": [
+        "0718540922",
+        "0114623408",
+        "0746529712"
+      ]
+    },
+    "preferredLoginMethod": "USERNAME",
+    "admissionOpen": true,
+    "academicYear": "2026",
+    "activeAdmissionYear": "2026",
+    "currentTerm": "Term 1, 2026",
+    "gradingScale": [
+      {
+        "grade": "A",
+        "min": 80,
+        "max": 100,
+        "description": "Exceeding Expectations (Distinction)"
+      },
+      {
+        "grade": "B",
+        "min": 70,
+        "max": 79,
+        "description": "Meeting Expectations (Credit)"
+      },
+      {
+        "grade": "C",
+        "min": 60,
+        "max": 69,
+        "description": "Approaching Expectations (Satisfactory)"
+      },
+      {
+        "grade": "D",
+        "min": 50,
+        "max": 59,
+        "description": "Developing (Needs Support)"
+      },
+      {
+        "grade": "E",
+        "min": 0,
+        "max": 49,
+        "description": "Below Expectations (Remediation Required)"
+      }
+    ],
+    "rankingEnabled": false
+  },
+  "users": [
+    {
+      "id": "usr-dir-1",
+      "name": "Constance Mwaka Pole",
+      "role": "CHIEF_ADMIN",
+      "title": "Director / Chief Administrator",
+      "email": "director@amanijunioracademy.ac.ke",
+      "phone": "0718540922",
+      "username": "director",
+      "staffId": "AMANI-DIR-001",
+      "department": "School Governance & Strategic Leadership",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-05T08:00:00Z",
+      "lastLogin": "2026-09-17T10:55:03.001Z"
+    },
+    {
+      "id": "usr-ht-1",
+      "name": "Nadhiri Chacha Salim",
+      "role": "CHIEF_ADMIN",
+      "title": "Headteacher / Chief Administrator",
+      "email": "headteacher@amanijunioracademy.ac.ke",
+      "phone": "0114623408",
+      "username": "headteacher",
+      "staffId": "AMANI-HT-002",
+      "department": "Curriculum Implementation & Academic Administration",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-05T08:30:00Z",
+      "lastLogin": "2026-09-17T10:51:48.825Z"
+    },
+    {
+      "id": "usr-ict-1",
+      "name": "Vitalice Odhiambo",
+      "role": "CHIEF_ADMIN",
+      "title": "Deputy Headteacher & Head of Academics / Chief Admin",
+      "email": "vitalice@amanijunioracademy.ac.ke",
+      "phone": "0746529712",
+      "username": "vitalice",
+      "staffId": "AMANI-ICT-003",
+      "department": "STEM, Information & Communications Technology",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-05T09:00:00Z",
+      "assignedClassIds": [
+        "cls-jss-7a",
+        "cls-jss-8"
+      ],
+      "assignedSubjectIds": [
+        "sub-cs",
+        "sub-pretech"
+      ],
+      "lastLogin": "2026-09-21T05:28:29.745Z"
+    },
+    {
+      "id": "usr-tch-1",
+      "name": "Faith Mwende Kilonzo",
+      "role": "TEACHER",
+      "title": "Senior Teacher - Languages",
+      "email": "faith.mwende@amanijunioracademy.ac.ke",
+      "phone": "0722112233",
+      "username": "teacher_faith",
+      "staffId": "AMANI-TCH-004",
+      "department": "Languages & Humanities",
+      "subjectSpecialization": "English Language & Literature in English",
+      "additionalSpecializations": [
+        "Debating Club Patron",
+        "Creative Writing"
+      ],
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T10:00:00Z",
+      "assignedClassIds": [
+        "cls-jss-7a",
+        "cls-pri-6"
+      ],
+      "assignedSubjectIds": [
+        "sub-eng",
+        "sub-kisw"
+      ]
+    },
+    {
+      "id": "usr-tch-2",
+      "name": "Peter Juma Mwangi",
+      "role": "TEACHER",
+      "title": "Teacher - Integrated Science & Agriculture",
+      "email": "peter.juma@amanijunioracademy.ac.ke",
+      "phone": "0733445566",
+      "username": "teacher_peter",
+      "staffId": "AMANI-TCH-005",
+      "department": "Pure & Applied Sciences",
+      "subjectSpecialization": "Integrated Science & Agricultural Practical Projects",
+      "additionalSpecializations": [
+        "4-K Club Patron",
+        "Environmental Sustainability"
+      ],
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T10:30:00Z",
+      "assignedClassIds": [
+        "cls-jss-7a",
+        "cls-jss-8"
+      ],
+      "assignedSubjectIds": [
+        "sub-sci",
+        "sub-agri"
+      ]
+    },
+    {
+      "id": "usr-tch-3",
+      "name": "Emmanuel Mwachiro",
+      "role": "TEACHER",
+      "title": "Teacher - Mathematics & CRE",
+      "email": "emmanuel.mwachiro@amanijunioracademy.ac.ke",
+      "phone": "0721998877",
+      "username": "teacher_emmanuel",
+      "staffId": "AMANI-TCH-006",
+      "department": "Mathematics & Humanities",
+      "subjectSpecialization": "Junior Secondary Mathematics & Christian Religious Education (CRE)",
+      "additionalSpecializations": [
+        "Chess Club Patron",
+        "Guidance & Counseling"
+      ],
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-08T09:15:00Z",
+      "assignedClassIds": [
+        "cls-jss-7a",
+        "cls-pri-5"
+      ],
+      "assignedSubjectIds": [
+        "sub-math",
+        "sub-re"
+      ]
+    },
+    {
+      "id": "usr-tch-raheli",
+      "name": "Madam Raheli Wali",
+      "role": "TEACHER",
+      "title": "Teacher - Playgroup & Daycare",
+      "email": "raheli.wali@amanijunioracademy.ac.ke",
+      "phone": "0711000001",
+      "username": "raheli.wali",
+      "staffId": "AMANI-TCH-001",
+      "department": "Early Childhood Development (ECDE)",
+      "subjectSpecialization": "Playgroup & Daycare Early Activities",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T08:00:00Z",
+      "assignedClassIds": [
+        "cls-playgroup",
+        "cls-daycare"
+      ],
+      "lastLogin": "2026-09-17T10:55:05.715Z"
+    },
+    {
+      "id": "usr-tch-tatu",
+      "name": "Madam Tatu",
+      "role": "TEACHER",
+      "title": "Teacher - Playgroup",
+      "email": "madam.tatu@amanijunioracademy.ac.ke",
+      "phone": "0711000002",
+      "username": "madam.tatu",
+      "staffId": "AMANI-TCH-002",
+      "department": "Early Childhood Development (ECDE)",
+      "subjectSpecialization": "Playgroup Activities & Psychomotor Development",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T08:30:00Z",
+      "assignedClassIds": [
+        "cls-playgroup"
+      ]
+    },
+    {
+      "id": "usr-tch-periz",
+      "name": "Madam Periz Inyangala",
+      "role": "TEACHER",
+      "title": "Teacher - PP1 (Pre-Primary 1)",
+      "email": "periz.inyangala@amanijunioracademy.ac.ke",
+      "phone": "0711000003",
+      "username": "periz.inyangala",
+      "staffId": "AMANI-TCH-003",
+      "department": "Pre-Primary Education",
+      "subjectSpecialization": "PP1 Language & Mathematical Activities",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T09:00:00Z",
+      "assignedClassIds": [
+        "cls-pp-1"
+      ]
+    },
+    {
+      "id": "usr-tch-halima",
+      "name": "Madam Halima",
+      "role": "TEACHER",
+      "title": "Teacher - Grade 1",
+      "email": "halima@amanijunioracademy.ac.ke",
+      "phone": "0711000007",
+      "username": "teacher.halima",
+      "staffId": "AMANI-TCH-007",
+      "department": "Lower Primary",
+      "subjectSpecialization": "Grade 1 Kiswahili & Environmental Activities",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T11:00:00Z",
+      "assignedClassIds": [
+        "cls-pri-1"
+      ]
+    },
+    {
+      "id": "usr-tch-elias",
+      "name": "Mr. Elias",
+      "role": "TEACHER",
+      "title": "Teacher - Grade 2",
+      "email": "elias@amanijunioracademy.ac.ke",
+      "phone": "0711000008",
+      "username": "teacher.elias",
+      "staffId": "AMANI-TCH-008",
+      "department": "Lower Primary",
+      "subjectSpecialization": "Grade 2 Mathematics & Science Activities",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T11:30:00Z",
+      "assignedClassIds": [
+        "cls-pri-2"
+      ]
+    },
+    {
+      "id": "usr-tch-jessicah",
+      "name": "Madam Jessicah Chizi",
+      "role": "TEACHER",
+      "title": "Teacher - Grade 3",
+      "email": "jessicah.chizi@amanijunioracademy.ac.ke",
+      "phone": "0711000009",
+      "username": "jessicah.chizi",
+      "staffId": "AMANI-TCH-009",
+      "department": "Lower Primary",
+      "subjectSpecialization": "Grade 3 Languages & Creative Arts",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T12:00:00Z",
+      "assignedClassIds": [
+        "cls-pri-3"
+      ]
+    },
+    {
+      "id": "usr-tch-nancy",
+      "name": "Madam Nancy",
+      "role": "TEACHER",
+      "title": "Teacher - Grade 4",
+      "email": "nancy@amanijunioracademy.ac.ke",
+      "phone": "0711000010",
+      "username": "teacher.nancy",
+      "staffId": "AMANI-TCH-010",
+      "department": "Upper Primary",
+      "subjectSpecialization": "Grade 4 Social Studies, CRE & Agriculture",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T12:30:00Z",
+      "assignedClassIds": [
+        "cls-pri-4"
+      ]
+    },
+    {
+      "id": "usr-tch-josephat",
+      "name": "Mr. Josephat Kobe",
+      "role": "TEACHER",
+      "title": "Teacher - Grade 5",
+      "email": "josephat.kobe@amanijunioracademy.ac.ke",
+      "phone": "0711000011",
+      "username": "josephat.kobe",
+      "staffId": "AMANI-TCH-011",
+      "department": "Upper Primary",
+      "subjectSpecialization": "Grade 5 Mathematics & Integrated Science",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T13:00:00Z",
+      "assignedClassIds": [
+        "cls-pri-5"
+      ],
+      "lastLogin": "2026-09-21T05:39:10.198Z"
+    },
+    {
+      "id": "usr-tch-rhoda",
+      "name": "Madam Rhoda Sikuku",
+      "role": "TEACHER",
+      "title": "Teacher - Grade 7 (Junior Secondary)",
+      "email": "rhoda.sikuku@amanijunioracademy.ac.ke",
+      "phone": "0711000013",
+      "username": "rhoda.sikuku",
+      "staffId": "AMANI-TCH-012",
+      "department": "Junior Secondary School (JSS)",
+      "subjectSpecialization": "Junior Secondary English, Literature & Humanities",
+      "isActive": true,
+      "mustChangePassword": false,
+      "requiresSecuritySetup": false,
+      "createdAt": "2026-01-06T13:30:00Z",
+      "assignedClassIds": [
+        "cls-jss-7a",
+        "cls-jss-7b"
+      ]
+    }
+  ],
+  "credentials": {
+    "usr-dir-1": {
+      "hash": "2e358737a9b1846f06cbe594ad5f9ea9755d2852d7ffca1a3e3bf3b633d4bb2f10df77cc13fe1a1d8657765ac6dc5a1c35ee6383f8eaf393bac66332694ff899",
+      "salt": "685c0a002e50df14163c894754f5f737"
+    },
+    "usr-ht-1": {
+      "hash": "c5683d0e1eb4d280e310cd1650ab23340fb4b865d55a042333dc7bd80ef40cd91df736a4060af2949180670aceddac4f9f27dee037f484d155a71fe6df9fea64",
+      "salt": "dc54f99affee9c1df6342504cd98290f"
+    },
+    "usr-ict-1": {
+      "hash": "87412c625863a195c54e81536b8a8d6bb7f9e73fb525ecf21cc2dd1b99427b461e05bc310999cb43a4a7f7e79e855aa2eb2d2902a85600d55c9bc5171d74d3d2",
+      "salt": "aa19effa884c7482e3db39316adc9d6b"
+    },
+    "usr-tch-raheli": {
+      "hash": "850264dc91e7989ad326b228f21f3354c7c0ecb8a44996c3f9edf0acd373fa41d6aa74138b701f094baf00b84867872a30c56e90f3780364bdf231ddd57a4673",
+      "salt": "47f0203d6a0e9515ada3b54857a71313"
+    },
+    "usr-tch-tatu": {
+      "hash": "923ba19aa57542a428973d07632006b084e2868e7d12728628bc3896412f5de0c0d08f6c19d2537efa79a06d999bba4182a7c15d6b6682b3f3f9249136394ff4",
+      "salt": "49dee9bd39088af5deebe9f7e1cb2001"
+    },
+    "usr-tch-periz": {
+      "hash": "3f708307fc0b253c8b7b04f9325971d2c0c993958b16de9fb8ad4a0b78313bd7e304fd61dbc09c93437183ed48f7e32a8ca4b5321399bd8f60cdf555b4bb85b8",
+      "salt": "784b0ff743108ba0bb7ec9c39b91c249"
+    },
+    "usr-tch-gladys": {
+      "hash": "015cb0c1066db9b62c1277f975e69e41202471a0381a2487e5318dd58346f94b60f2d52ffe714e3ce3ee1c599fb80d4ceafe3c16d9c074bb881a17697c04c717",
+      "salt": "aac4b53275970e368a359601430847d7"
+    },
+    "usr-tch-emily": {
+      "hash": "e7558a1d60f00e827535dae7a4be9ab26a3d99abd322622280f0e8bcb36703060d19265852089e468b10dda82d1c3a850e9fc8a3f98c9e8c6832bf02a61d8eaa",
+      "salt": "e5c7f2b416824b1f4aafd53a528f4a1f"
+    },
+    "usr-tch-florence": {
+      "hash": "0d46dc2fba2b581c6f300594f97684794bed0546fc220c61faf06a85ffc7ba1d3632d6bc1a3a7223a4067c919a4da0e8133d63ae036a54aca2c24e6e6dfc1777",
+      "salt": "2e27ae320d41b8bb0231c5600e37ca7c"
+    },
+    "usr-tch-halima": {
+      "hash": "bef7b0c255566134c99ce6ba2e33f47f26ce79052481bacbc2208c6b942701901a958439a09b680c148cbe1241b3c6fdada08117350a8d2e85b33c2022f6714e",
+      "salt": "d23755816b6575f69d6332e014160c49"
+    },
+    "usr-tch-elias": {
+      "hash": "206dfae0df4f5da745381480d3773ee0ea5b74bf3a6dca24670c074dae436e678f53850cbcdaa11cba5066b22567c600ca739e0bea2b7dcfd223dd6aa021c44d",
+      "salt": "664f6ae84b95226760f0b041d280c26a"
+    },
+    "usr-tch-jessicah": {
+      "hash": "28ba5c39a37c1b11cf225ecdd97d8643b379876faae2169f05f4fe7ad286851be786401e4429b8f38748da74657329adb8f362816192e30a9006a2fce87f27c9",
+      "salt": "7e0f86c4d5b3f2a45286c78a14e4adee"
+    },
+    "usr-tch-nancy": {
+      "hash": "9b1c5c10606d3433b2ee8bda88f3997a28d26df7d4b7a37926f410b919fbb56ca7e157f9be7ccb83c43eb6448892c2ae35cb9314203a704645a74952d1c8dd7a",
+      "salt": "6cc2b8f46a021493813a4d336acb918d"
+    },
+    "usr-tch-josephat": {
+      "hash": "f0f8fad0a734961b60274033a9ac1f982c4689519a2a6489bf796a9fea5fc636b1f7b8def36bece9900828de8d49188e329488b24b89d33fb7136765265e8f1b",
+      "salt": "f0fd3cb3b6bb14b05682e7d162a7501f"
+    },
+    "usr-tch-rhoda": {
+      "hash": "76a505205f136e2618b2e11c494d91cf4a07d92a784f192fe85288d9df445028477aa7e9cb045741824eab879317cb693b65333810f1dd5200e8c6505c3771dd",
+      "salt": "99f8eaa5807646bae1d0c3ab47a76775"
+    },
+    "usr-tch-1": {
+      "hash": "fb788a1a8d0bd4653d636d7eb1b53649c75fdaa74aecc61710d3977e2f70af54748f7714186344e94d428df08d6738dab7c63357f9c566682c6cd4f86b75cda3",
+      "salt": "b3f1d9b84f40b2fc2064a02cbb399204"
+    },
+    "usr-tch-2": {
+      "hash": "354a8e8600d228869ce0218cc7e7d2d10a688d7c9c5acee24a6a243e4c8602002675240178d62f740910856be9478a2b6e859b5c287033a891ecbfdf983a4663",
+      "salt": "93399d3401206c1a0cb7e167c19b5ad0"
+    },
+    "usr-tch-3": {
+      "hash": "a163e54c7e8a4bcadc14f06a4a42c75c590f1854b9a61c5ca051afc2a2126db1e03a7abe56b25a104fb12fb0e2a5ee7a006024daf7f2ac3ded3ce53c24c844b2",
+      "salt": "f5dcbf51eaf9ec568c2327d7f02b0d02"
+    }
+  },
+  "teachers": [
+    {
+      "id": "tch-dir",
+      "userId": "usr-dir-1",
+      "fullName": "Constance Mwaka Pole",
+      "staffId": "AMANI-DIR-001",
+      "position": "School Director / Chief Administrator",
+      "department": "School Governance & Strategic Leadership",
+      "email": "director@amanijunioracademy.ac.ke",
+      "phone": "0718540922",
+      "qualifications": "B.Ed (Arts), Dip. Educational Management & Institutional Governance",
+      "specialization": "School Vision, Holistic Mentorship & Community Development",
+      "additionalSpecializations": [
+        "Board of Management Chair",
+        "Strategic Planning"
+      ],
+      "biography": "Director Constance Mwaka Pole is a visionary educational champion celebrated throughout Mazeras and Kilifi County for establishing an inclusive, morals-driven sanctuary of learning. Her transformative leadership, unwavering dedication to child safeguarding, and passionate commitment to academic distinction continue to empower hundreds of young scholars to realize their fullest divine and academic potential.",
+      "assignedClasses": [
+        "Grade 7A (JSS)",
+        "Grade 8 Alpha (JSS)",
+        "Grade 9 Alpha (JSS)"
+      ],
+      "assignedSubjects": [
+        "Leadership & Ethics"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "Visionary founder and pillar of Amani Junior Academy, transforming education in Mazeras with profound integrity, selfless devotion, and motherly compassion.",
+      "philosophy": "Every child is endowed with divine promise; our highest calling is to nurture it with unconditional love, discipline, and uncompromising academic standards."
+    },
+    {
+      "id": "tch-ht",
+      "userId": "usr-ht-1",
+      "fullName": "Nadhiri Chacha Salim",
+      "staffId": "AMANI-HT-002",
+      "position": "Headteacher / Chief Administrator",
+      "department": "Curriculum Implementation & Academic Administration",
+      "email": "headteacher@amanijunioracademy.ac.ke",
+      "phone": "0114623408",
+      "qualifications": "B.Ed (Sc), Higher Dip. Quality Assurance & Standards in Education",
+      "specialization": "CBC Curriculum Alignment, Teacher Mentorship & Examinations Quality",
+      "additionalSpecializations": [
+        "Academic Quality Assurance",
+        "KNEC Assessment Protocols"
+      ],
+      "biography": "Headteacher Nadhiri Chacha Salim is an esteemed educational administrator renowned for his rigorous standards of instructional delivery, gentle firmness in student discipline, and relentless pursuit of pedagogical excellence. He works hand-in-hand with parents and teachers to cultivate an orderly, joyful, and high-performing learning environment.",
+      "assignedClasses": [
+        "Grade 8 Alpha (JSS)",
+        "Grade 6 Leaders"
+      ],
+      "assignedSubjects": [
+        "Mathematics & Science Coordination"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "Steadfast custodian of academic discipline, instructional quality, and Kenya Competency-Based Curriculum (CBC) compliance.",
+      "philosophy": "Discipline and structured effort are the golden bridges between a student’s raw potential and lifelong scholastic accomplishment."
+    },
+    {
+      "id": "tch-ict",
+      "userId": "usr-ict-1",
+      "fullName": "Vitalice Odhiambo",
+      "staffId": "AMANI-ICT-003",
+      "position": "Deputy Headteacher & Head of Academics / ICT",
+      "department": "Academic Administration, Curriculum Standards & ICT",
+      "email": "vitalice@amanijunioracademy.ac.ke",
+      "phone": "0746529712",
+      "qualifications": "B.Sc Computer Science & Education, Certified CBC Master Facilitator",
+      "specialization": "In Charge of Academics, Curriculum Delivery, Examinations, Computer Studies & Science",
+      "additionalSpecializations": [
+        "Deputy Headteacher - Academics",
+        "Curriculum Standards Lead",
+        "School ICT Administrator",
+        "Robotics & STEM Patron"
+      ],
+      "biography": "Teacher Vitalice Odhiambo is the distinguished Deputy Headteacher and Head of Academics, in direct charge of academic standards, timetable coordination, curriculum delivery, diagnostic assessments, and digital integration across all tiers of the academy. Praised by parents and colleagues for his dynamic teaching methods, unmatched dedication to pupil performance, and visionary coding curriculum, he ensures every learner achieves academic brilliance and technological confidence.",
+      "assignedClasses": [
+        "Grade 6 Leaders",
+        "Grade 7A (JSS)",
+        "Grade 8 Alpha (JSS)"
+      ],
+      "assignedSubjects": [
+        "Computer Science & Coding",
+        "Pre-Technical Studies",
+        "Integrated Science"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "The academic heartbeat of Amani Junior Academy & JSS. In charge of Academics, Teacher Vitalice Odhiambo leads with extraordinary diligence, orchestrating timetable precision, stellar academic results, and pioneering digital education.",
+      "philosophy": "Through clear academic structure, disciplined study habits, and hands-on digital empowerment, no student will ever be left behind."
+    },
+    {
+      "id": "tch-faith",
+      "userId": "usr-tch-1",
+      "fullName": "Faith Mwende Kilonzo",
+      "staffId": "AMANI-TCH-004",
+      "position": "Teacher - PP1 (Pre-Primary 1)",
+      "department": "Pre-Primary Education",
+      "email": "faith.mwende@amanijunioracademy.ac.ke",
+      "phone": "0722112233",
+      "qualifications": "Cert. ECDE & Foundational CBC Mentorship",
+      "specialization": "PP1 Environmental Activities, Psychomotor & Music",
+      "additionalSpecializations": [
+        "Early Sports",
+        "Drama & Roleplay"
+      ],
+      "biography": "Madam Gladys brings radiant enthusiasm and joyful energy into every lesson. A champion of motor agility and creative exploration, she helps learners observe nature, express themselves freely through drama and music, and embrace physical health from an early age.",
+      "assignedClasses": [
+        "Pre-Primary 1 (PP1)"
+      ],
+      "assignedSubjects": [
+        "Environmental Activities",
+        "Psychomotor & Music"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "A radiant educator whose infectious enthusiasm for music and nature unlocks children’s imagination and physical confidence.",
+      "philosophy": "Curiosity nurtured with warm encouragement in the early years blossoms into lifelong academic distinction."
+    },
+    {
+      "id": "tch-peter",
+      "userId": "usr-tch-2",
+      "fullName": "Peter Juma Mwangi",
+      "staffId": "AMANI-TCH-005",
+      "position": "Teacher - PP2 (Pre-Primary 2)",
+      "department": "Pre-Primary Education",
+      "email": "peter.juma@amanijunioracademy.ac.ke",
+      "phone": "0733445566",
+      "qualifications": "Dip. Teacher Education (ECDE / Primary Transition)",
+      "specialization": "PP2 Phonics Reading, Writing Readiness & Numeracy",
+      "additionalSpecializations": [
+        "Spelling Bee Coach",
+        "Early STEM Concepts"
+      ],
+      "biography": "Teacher Emily Mwaka is a revered reading specialist praised for turning PP2 learners into astonishingly fluent, confident early readers. Her meticulous phonics workshops and warm encouragement ensure that every pupil graduates to Grade 1 with superior literacy and numeracy foundations.",
+      "assignedClasses": [
+        "Pre-Primary 2 (PP2)"
+      ],
+      "assignedSubjects": [
+        "Phonics & Literacy",
+        "Mathematical Activities"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "A revered phonics master celebrated for transforming PP2 learners into astonishingly fluent, confident early readers ready for Grade 1.",
+      "philosophy": "When a child learns to read with joy and ease, the doors of every academic discipline are unlocked for life."
+    },
+    {
+      "id": "tch-emmanuel",
+      "userId": "usr-tch-3",
+      "fullName": "Emmanuel Mwachiro",
+      "staffId": "AMANI-TCH-006",
+      "position": "Teacher - Grade 1A",
+      "department": "Lower Primary",
+      "email": "emmanuel.mwachiro@amanijunioracademy.ac.ke",
+      "phone": "0721998877",
+      "qualifications": "P1 Primary Teacher Certificate, CBC Trained Facilitator",
+      "specialization": "Grade 1A Mathematics Activities & English Language",
+      "additionalSpecializations": [
+        "Remedial Reading",
+        "Penmanship & Handwriting"
+      ],
+      "biography": "Madam Florence is an outstanding pillar of Lower Primary education, admired for her kind motherly composure and dedication to individualized learner support. She transforms complex early arithmetic into intuitive daily adventures and nurtures impeccable penmanship.",
+      "assignedClasses": [
+        "Grade 1A"
+      ],
+      "assignedSubjects": [
+        "Mathematics Activities",
+        "English Activities"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "An esteemed Lower Primary matriarch whose calm clarity turns first-grade arithmetic and penmanship into a daily triumph for every child.",
+      "philosophy": "Patience, structure, and warm praise awaken the dormant brilliance in every student."
+    },
+    {
+      "id": "tch-raheli",
+      "userId": "usr-tch-raheli",
+      "fullName": "Madam Raheli Wali",
+      "staffId": "AMANI-TCH-001",
+      "position": "Teacher - Playgroup & Daycare",
+      "department": "Early Childhood Development (ECDE)",
+      "email": "raheli.wali@amanijunioracademy.ac.ke",
+      "phone": "0711000001",
+      "qualifications": "Cert. Early Childhood Development Education (ECDE)",
+      "specialization": "Daycare & Playgroup Nurturing, Socialization & Sensory Play",
+      "additionalSpecializations": [
+        "Early Child Health",
+        "Creative Movement"
+      ],
+      "biography": "Madam Raheli Wali is cherished for her boundless maternal warmth, angelic patience, and exceptional gift in comforting young toddlers taking their very first steps away from home. Her playful, affirming classroom atmosphere transforms school into a safe haven of laughter, wonder, and emotional security.",
+      "assignedClasses": [
+        "Playgroup (Budding Stars)",
+        "Daycare (Tender Hearts)"
+      ],
+      "assignedSubjects": [
+        "Creative Activities",
+        "Language & Social Skills"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "A gentle mother to our youngest learners whose tender care dissolves all first-day tears and fills toddlers with boundless confidence and joy.",
+      "philosophy": "To teach a toddler is to touch the future with tenderness, boundless patience, and unconditional affection."
+    },
+    {
+      "id": "tch-tatu",
+      "userId": "usr-tch-tatu",
+      "fullName": "Madam Tatu",
+      "staffId": "AMANI-TCH-002",
+      "position": "Teacher - Playgroup",
+      "department": "Early Childhood Development (ECDE)",
+      "email": "madam.tatu@amanijunioracademy.ac.ke",
+      "phone": "0711000002",
+      "qualifications": "Dip. ECDE & Child Psychology",
+      "specialization": "Playgroup Activities, Fine Motor Skills & Pre-Literacy",
+      "additionalSpecializations": [
+        "Puppetry & Storytelling",
+        "Music & Rhymes"
+      ],
+      "biography": "Madam Tatu is a master of imaginative early learning, admired for bringing stories and rhymes alive through colorful puppetry, sensory exploration, and joyful song. She effortlessly instills confidence, verbal articulacy, and cheerful camaraderie in our youngest learners.",
+      "assignedClasses": [
+        "Playgroup (Budding Stars)"
+      ],
+      "assignedSubjects": [
+        "Psychomotor Activities",
+        "Sensory Play & Songs"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "A spark of imaginative wonder who turns early childhood into an enchanting world of songs, motor coordination, and joyful learning.",
+      "philosophy": "Joyful, hands-on play is the highest form of foundational research for a growing child."
+    },
+    {
+      "id": "tch-periz",
+      "userId": "usr-tch-periz",
+      "fullName": "Madam Periz Inyangala",
+      "staffId": "AMANI-TCH-003",
+      "position": "Teacher - PP1 (Pre-Primary 1)",
+      "department": "Pre-Primary Education",
+      "email": "periz.inyangala@amanijunioracademy.ac.ke",
+      "phone": "0711000003",
+      "qualifications": "Dip. Early Childhood Education (KICD CBC Certified)",
+      "specialization": "PP1 Language Activities & Pre-Mathematical Concepts",
+      "additionalSpecializations": [
+        "Child Counseling",
+        "Art Therapy"
+      ],
+      "biography": "Madam Periz Inyangala is an exceptional pre-primary educator celebrated for laying rock-solid foundations in letter sounds, numeracy, and cooperative team values. Her gentle guidance and structured sensory centers inspire deep curiosity and lifelong self-confidence in little scholars.",
+      "assignedClasses": [
+        "Pre-Primary 1 (PP1)"
+      ],
+      "assignedSubjects": [
+        "Language Activities",
+        "Mathematical Activities"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "A cornerstone of foundational literacy, revered by parents for giving PP1 children rock-solid phonetic clarity and numeric confidence.",
+      "philosophy": "A solid, affirming beginning creates an unstoppable lifelong scholar."
+    },
+    {
+      "id": "tch-halima",
+      "userId": "usr-tch-halima",
+      "fullName": "Madam Halima",
+      "staffId": "AMANI-TCH-007",
+      "position": "Teacher - Grade 1B",
+      "department": "Lower Primary",
+      "email": "halima@amanijunioracademy.ac.ke",
+      "phone": "0711000007",
+      "qualifications": "Dip. Primary Education (Languages & Humanities)",
+      "specialization": "Grade 1B Kiswahili Activities & Environmental Studies",
+      "additionalSpecializations": [
+        "Cultural Heritage Club",
+        "Traditional Storytelling"
+      ],
+      "biography": "Madam Halima is a gifted linguist and cultural storyteller whose vibrant Kiswahili sessions inspire children to speak eloquently and embrace coastal heritage. Her outdoor environmental explorations instill respect for living things and community responsibility.",
+      "assignedClasses": [
+        "Grade 1B"
+      ],
+      "assignedSubjects": [
+        "Kiswahili Activities",
+        "Environmental Studies"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "Master custodian of Kiswahili eloquence and cultural dignity, inspiring rich oration and reverence for the natural environment.",
+      "philosophy": "Lugha safi ni uti wa mgongo wa hekima, maadili mema na utambulisho wa mwanafunzi."
+    },
+    {
+      "id": "tch-elias",
+      "userId": "usr-tch-elias",
+      "fullName": "Mr. Elias",
+      "staffId": "AMANI-TCH-008",
+      "position": "Teacher - Grade 2",
+      "department": "Lower Primary",
+      "email": "elias@amanijunioracademy.ac.ke",
+      "phone": "0711000008",
+      "qualifications": "B.Ed (Primary Education), Certified CBC Instructor",
+      "specialization": "Grade 2 Mathematics Activities & Science Concepts",
+      "additionalSpecializations": [
+        "Mental Math Club",
+        "Junior Scouts Patron"
+      ],
+      "biography": "Mr. Elias is celebrated for his vibrant, interactive teaching style that turns mathematics into an exhilarating quest. He excels at sparking scientific inquiry in Grade 2 learners and is an inspiring mentor who teaches discipline, courage, and teamwork through Junior Scouts.",
+      "assignedClasses": [
+        "Grade 2 Achievers"
+      ],
+      "assignedSubjects": [
+        "Mathematics Activities",
+        "Science & Hygiene"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "Dynamic mathematics mentor and Junior Scouts leader whose high-energy lessons make problem-solving and scientific discovery exhilarating.",
+      "philosophy": "Mathematical confidence and personal character discipline go hand in hand to build champions."
+    },
+    {
+      "id": "tch-jessicah",
+      "userId": "usr-tch-jessicah",
+      "fullName": "Madam Jessicah Chizi",
+      "staffId": "AMANI-TCH-009",
+      "position": "Teacher - Grade 3",
+      "department": "Lower Primary",
+      "email": "jessicah.chizi@amanijunioracademy.ac.ke",
+      "phone": "0711000009",
+      "qualifications": "Dip. Education (English & Creative Arts)",
+      "specialization": "Grade 3 English, Creative Arts & Music",
+      "additionalSpecializations": [
+        "Choir Director",
+        "Drama & Elocution"
+      ],
+      "biography": "Madam Jessicah Chizi is a phenomenal creative arts instructor and choir director whose passion inspires extraordinary public speaking poise and artistic flair in Grade 3 learners. Under her mentorship, pupils develop rich vocabularies, expressive writing, and stage confidence.",
+      "assignedClasses": [
+        "Grade 3 Pioneers"
+      ],
+      "assignedSubjects": [
+        "English Language Activities",
+        "Creative Arts & Music"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "Brilliant creative arts visionary and choir director whose pupils shine with exceptional poise, expressive English, and award-winning harmonies.",
+      "philosophy": "Creative expression, music, and spoken eloquence give our children the courage to lead anywhere in the world."
+    },
+    {
+      "id": "tch-nancy",
+      "userId": "usr-tch-nancy",
+      "fullName": "Madam Nancy",
+      "staffId": "AMANI-TCH-010",
+      "position": "Teacher - Grade 4",
+      "department": "Upper Primary",
+      "email": "nancy@amanijunioracademy.ac.ke",
+      "phone": "0711000010",
+      "qualifications": "B.Ed (Arts - Social Studies & CRE)",
+      "specialization": "Grade 4 Social Studies, Christian Religious Education & Agriculture",
+      "additionalSpecializations": [
+        "4-K Club Coordinator",
+        "Environmental Conservation"
+      ],
+      "biography": "Madam Nancy is an inspiring educator celebrated for shaping moral uprightness, civic integrity, and hands-on agricultural mastery in Grade 4. Her active 4-K club gardens give pupils practical farming skills, environmental stewardship, and nutritional consciousness.",
+      "assignedClasses": [
+        "Grade 4 Champions"
+      ],
+      "assignedSubjects": [
+        "Social Studies & CRE",
+        "Agriculture & Nutrition"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "Exemplary agricultural champion and moral mentor cultivating lush green school gardens and integrity in Grade 4 leaders.",
+      "philosophy": "Work with your hands, guard your moral character, and learn to steward the earth responsibly."
+    },
+    {
+      "id": "tch-josephat",
+      "userId": "usr-tch-josephat",
+      "fullName": "Mr. Josephat Kobe",
+      "staffId": "AMANI-TCH-011",
+      "position": "Teacher - Grade 5",
+      "department": "Upper Primary",
+      "email": "josephat.kobe@amanijunioracademy.ac.ke",
+      "phone": "0711000011",
+      "qualifications": "B.Ed Science (Mathematics & Physical Education)",
+      "specialization": "Grade 5 Mathematics & Physical Health Education",
+      "additionalSpecializations": [
+        "Football Coach",
+        "Track & Field Master"
+      ],
+      "biography": "Mr. Josephat Kobe is an energetic, highly disciplined mathematics and sports mentor who instills intellectual tenacity and athletic excellence in Grade 5 pupils. His mathematical problem-solving drills and championship soccer training inspire focus, resilience, and victory.",
+      "assignedClasses": [
+        "Grade 5 Victors",
+        "Grade 5"
+      ],
+      "assignedSubjects": [
+        "Mathematics",
+        "Physical & Health Education"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "A powerhouse educator and athletics champion who builds razor-sharp mathematical thinkers and resilient sports champions.",
+      "philosophy": "A sharp, critical intellect thrives best inside a disciplined, active, and determined body."
+    },
+    {
+      "id": "tch-rhoda",
+      "userId": "usr-tch-rhoda",
+      "fullName": "Madam Rhoda Sikuku",
+      "staffId": "AMANI-TCH-012",
+      "position": "Teacher - Grade 7 (Junior Secondary)",
+      "department": "Junior Secondary School (JSS)",
+      "email": "rhoda.sikuku@amanijunioracademy.ac.ke",
+      "phone": "0711000013",
+      "qualifications": "B.Ed (Arts - English Literature & Social Sciences), First Class Honours",
+      "specialization": "Grade 7 Junior Secondary English, Literature & Humanities",
+      "additionalSpecializations": [
+        "Debate & Model UN Patron",
+        "JSS Academic Counseling"
+      ],
+      "biography": "Madam Rhoda Sikuku is an intellectually dazzling Junior Secondary literature specialist and debate coach holding First Class Honours. She challenges adolescents to think critically, express perspectives with persuasive eloquence, and excel in national CBC assessment benchmarks.",
+      "assignedClasses": [
+        "Grade 7 (JSS)"
+      ],
+      "assignedSubjects": [
+        "English Language",
+        "Social Studies & Life Skills"
+      ],
+      "accountStatus": "ACTIVE",
+      "commendation": "First-Class Honours academic luminary and debate patron driving our Junior Secondary scholars to elite national CBC distinction.",
+      "philosophy": "Empower young minds to question deeply, reason logically, and articulate their convictions with unshakeable dignity."
+    }
+  ],
+  "classes": [
+    {
+      "id": "cls-daycare",
+      "name": "Daycare (Tender Hearts - Below 3 Years)",
+      "level": "Pre-Primary",
+      "capacity": 25,
+      "enrolledCount": 18,
+      "classTeacherName": "Madam Raheli Wali"
+    },
+    {
+      "id": "cls-playgroup",
+      "name": "Playgroup (Budding Stars - Above 3 Years)",
+      "level": "Pre-Primary",
+      "capacity": 30,
+      "enrolledCount": 24,
+      "classTeacherName": "Madam Tatu & Madam Raheli Wali"
+    },
+    {
+      "id": "cls-pp-1",
+      "name": "Pre-Primary 1 (PP1 - Little Angels)",
+      "level": "Pre-Primary",
+      "capacity": 30,
+      "enrolledCount": 26,
+      "classTeacherName": "Madam Periz Inyangala & Madam Gladys"
+    },
+    {
+      "id": "cls-pp-2",
+      "name": "Pre-Primary 2 (PP2 - Shining Stars)",
+      "level": "Pre-Primary",
+      "capacity": 30,
+      "enrolledCount": 28,
+      "classTeacherName": "Emily Mwaka"
+    },
+    {
+      "id": "cls-pri-1a",
+      "name": "Grade 1A",
+      "level": "Primary",
+      "capacity": 35,
+      "enrolledCount": 28,
+      "classTeacherName": "Madam Florence"
+    },
+    {
+      "id": "cls-pri-1b",
+      "name": "Grade 1B",
+      "level": "Primary",
+      "capacity": 35,
+      "enrolledCount": 26,
+      "classTeacherName": "Madam Halima"
+    },
+    {
+      "id": "cls-pri-2",
+      "name": "Grade 2 Achievers",
+      "level": "Primary",
+      "capacity": 35,
+      "enrolledCount": 33,
+      "classTeacherName": "Mr. Elias"
+    },
+    {
+      "id": "cls-pri-3",
+      "name": "Grade 3 Pioneers",
+      "level": "Primary",
+      "capacity": 35,
+      "enrolledCount": 34,
+      "classTeacherName": "Madam Jessicah Chizi"
+    },
+    {
+      "id": "cls-pri-4",
+      "name": "Grade 4 Champions",
+      "level": "Primary",
+      "capacity": 35,
+      "enrolledCount": 31,
+      "classTeacherName": "Madam Nancy"
+    },
+    {
+      "id": "cls-pri-5",
+      "name": "Grade 5 Victors",
+      "level": "Primary",
+      "capacity": 35,
+      "enrolledCount": 33,
+      "classTeacherName": "Mr. Josephat Kobe"
+    },
+    {
+      "id": "cls-pri-6",
+      "name": "Grade 6 Leaders",
+      "level": "Primary",
+      "capacity": 35,
+      "enrolledCount": 35,
+      "classTeacherName": "Mr. Vitalice Odhiambo"
+    },
+    {
+      "id": "cls-jss-7",
+      "name": "Grade 7 (JSS)",
+      "level": "Junior Secondary",
+      "capacity": 45,
+      "enrolledCount": 38,
+      "classTeacherName": "Madam Rhoda Sikuku"
+    },
+    {
+      "id": "cls-jss-8",
+      "name": "Grade 8 (JSS) [Upcoming 2027 Provision]",
+      "level": "Junior Secondary",
+      "capacity": 45,
+      "enrolledCount": 0,
+      "classTeacherName": "Academic Provision (Upcoming Grade 8)"
+    },
+    {
+      "id": "cls-jss-9",
+      "name": "Grade 9 (JSS) [Upcoming Provision]",
+      "level": "Junior Secondary",
+      "capacity": 45,
+      "enrolledCount": 0,
+      "classTeacherName": "Academic Provision (Upcoming Grade 9)"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "sub-ey-math",
+      "name": "Mathematical Activities",
+      "code": "MTH-EY",
+      "level": "Pre-Primary",
+      "department": "Early Years"
+    },
+    {
+      "id": "sub-ey-lang",
+      "name": "Language Activities",
+      "code": "LANG-EY",
+      "level": "Pre-Primary",
+      "department": "Early Years"
+    },
+    {
+      "id": "sub-ey-env",
+      "name": "Environmental Activities",
+      "code": "ENV-EY",
+      "level": "Pre-Primary",
+      "department": "Early Years"
+    },
+    {
+      "id": "sub-ey-psy",
+      "name": "Psychomotor & Creative Activities",
+      "code": "PSY-EY",
+      "level": "Pre-Primary",
+      "department": "Early Years"
+    },
+    {
+      "id": "sub-ey-re",
+      "name": "Religious Education Activities (CRE/IRE)",
+      "code": "RE-EY",
+      "level": "Pre-Primary",
+      "department": "Early Years"
+    },
+    {
+      "id": "sub-pri-math",
+      "name": "Mathematics",
+      "code": "MATH-PRI",
+      "level": "Primary",
+      "department": "Mathematics"
+    },
+    {
+      "id": "sub-pri-eng",
+      "name": "English Language",
+      "code": "ENG-PRI",
+      "level": "Primary",
+      "department": "Languages"
+    },
+    {
+      "id": "sub-pri-kisw",
+      "name": "Kiswahili Language",
+      "code": "KISW-PRI",
+      "level": "Primary",
+      "department": "Languages"
+    },
+    {
+      "id": "sub-pri-sci",
+      "name": "Science & Technology",
+      "code": "SCI-PRI",
+      "level": "Primary",
+      "department": "Pure Sciences"
+    },
+    {
+      "id": "sub-pri-agri",
+      "name": "Agriculture & Nutrition",
+      "code": "AGRI-PRI",
+      "level": "Primary",
+      "department": "Applied Sciences"
+    },
+    {
+      "id": "sub-pri-sst",
+      "name": "Social Studies",
+      "code": "SST-PRI",
+      "level": "Primary",
+      "department": "Humanities"
+    },
+    {
+      "id": "sub-pri-cre",
+      "name": "Christian Religious Education (CRE)",
+      "code": "CRE-PRI",
+      "level": "Primary",
+      "department": "Humanities"
+    },
+    {
+      "id": "sub-pri-arts",
+      "name": "Creative Arts (Art, Craft & Music)",
+      "code": "ARTS-PRI",
+      "level": "Primary",
+      "department": "Creative Arts"
+    },
+    {
+      "id": "sub-pri-phe",
+      "name": "Physical & Health Education (PHE)",
+      "code": "PHE-PRI",
+      "level": "Primary",
+      "department": "Creative Arts"
+    },
+    {
+      "id": "sub-math",
+      "name": "Mathematics",
+      "code": "MATH-JSS",
+      "level": "Junior Secondary",
+      "department": "Mathematics"
+    },
+    {
+      "id": "sub-eng",
+      "name": "English Language",
+      "code": "ENG-JSS",
+      "level": "Junior Secondary",
+      "department": "Languages"
+    },
+    {
+      "id": "sub-kisw",
+      "name": "Kiswahili & Fasihi",
+      "code": "KISW-JSS",
+      "level": "Junior Secondary",
+      "department": "Languages"
+    },
+    {
+      "id": "sub-sci",
+      "name": "Integrated Science",
+      "code": "ISCI-JSS",
+      "level": "Junior Secondary",
+      "department": "Pure Sciences"
+    },
+    {
+      "id": "sub-cs",
+      "name": "Computer Science & Coding",
+      "code": "CS-JSS",
+      "level": "Junior Secondary",
+      "department": "ICT"
+    },
+    {
+      "id": "sub-agri",
+      "name": "Agriculture & Nutrition",
+      "code": "AGRI-JSS",
+      "level": "Junior Secondary",
+      "department": "Applied Sciences"
+    },
+    {
+      "id": "sub-pretech",
+      "name": "Pre-Technical Studies",
+      "code": "PTECH-JSS",
+      "level": "Junior Secondary",
+      "department": "Technical"
+    },
+    {
+      "id": "sub-social",
+      "name": "Social Studies & Life Skills",
+      "code": "SST-JSS",
+      "level": "Junior Secondary",
+      "department": "Humanities"
+    },
+    {
+      "id": "sub-re",
+      "name": "Christian Religious Education (CRE)",
+      "code": "CRE-JSS",
+      "level": "Junior Secondary",
+      "department": "Humanities"
+    },
+    {
+      "id": "sub-arts",
+      "name": "Creative Arts & Sports",
+      "code": "ARTS-JSS",
+      "level": "Junior Secondary",
+      "department": "Creative Arts"
+    }
+  ],
+  "students": [
+    {
+      "id": "stu-g5-B005129745",
+      "studentId": "B005129745",
+      "admissionNumber": "B005129745",
+      "assessmentNumber": "B005129745",
+      "fullName": "ADRIAN KAHINDI",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005206268",
+      "studentId": "B005206268",
+      "admissionNumber": "B005206268",
+      "assessmentNumber": "B005206268",
+      "fullName": "JOSEPH",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005206534",
+      "studentId": "B005206534",
+      "admissionNumber": "B005206534",
+      "assessmentNumber": "B005206534",
+      "fullName": "MAIMUNA ASASI",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005207015",
+      "studentId": "B005207015",
+      "admissionNumber": "B005207015",
+      "assessmentNumber": "B005207015",
+      "fullName": "YUMNA",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005213382",
+      "studentId": "B005213382",
+      "admissionNumber": "B005213382",
+      "assessmentNumber": "B005213382",
+      "fullName": "JONATHAN",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005213632",
+      "studentId": "B005213632",
+      "admissionNumber": "B005213632",
+      "assessmentNumber": "B005213632",
+      "fullName": "LOREEN KANINI",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005233695",
+      "studentId": "B005233695",
+      "admissionNumber": "B005233695",
+      "assessmentNumber": "B005233695",
+      "fullName": "SWALHA",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005233730",
+      "studentId": "B005233730",
+      "admissionNumber": "B005233730",
+      "assessmentNumber": "B005233730",
+      "fullName": "DAVIAN MUCHIRI",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005233781",
+      "studentId": "B005233781",
+      "admissionNumber": "B005233781",
+      "assessmentNumber": "B005233781",
+      "fullName": "SHAAFI BIDII",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005238377",
+      "studentId": "B005238377",
+      "admissionNumber": "B005238377",
+      "assessmentNumber": "B005238377",
+      "fullName": "AISHA HASSAN",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005238497",
+      "studentId": "B005238497",
+      "admissionNumber": "B005238497",
+      "assessmentNumber": "B005238497",
+      "fullName": "SUHAILA ALI",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "Visually Impaired",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005238817",
+      "studentId": "B005238817",
+      "admissionNumber": "B005238817",
+      "assessmentNumber": "B005238817",
+      "fullName": "UMEYMA OMAR",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005264384",
+      "studentId": "B005264384",
+      "admissionNumber": "B005264384",
+      "assessmentNumber": "B005264384",
+      "fullName": "JEMIMA BAHATI",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005264509",
+      "studentId": "B005264509",
+      "admissionNumber": "B005264509",
+      "assessmentNumber": "B005264509",
+      "fullName": "RAMIZ MUNGA",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005713366",
+      "studentId": "B005713366",
+      "admissionNumber": "B005713366",
+      "assessmentNumber": "B005713366",
+      "fullName": "ASHA MWALIMU",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B005953310",
+      "studentId": "B005953310",
+      "admissionNumber": "B005953310",
+      "assessmentNumber": "B005953310",
+      "fullName": "AARON MUTSYA",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006113092",
+      "studentId": "B006113092",
+      "admissionNumber": "B006113092",
+      "assessmentNumber": "B006113092",
+      "fullName": "BRITEENY",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006113142",
+      "studentId": "B006113142",
+      "admissionNumber": "B006113142",
+      "assessmentNumber": "B006113142",
+      "fullName": "SAUMU ATHMAN",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006113173",
+      "studentId": "B006113173",
+      "admissionNumber": "B006113173",
+      "assessmentNumber": "B006113173",
+      "fullName": "HAMISI",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006113229",
+      "studentId": "B006113229",
+      "admissionNumber": "B006113229",
+      "assessmentNumber": "B006113229",
+      "fullName": "JUDY MWIKALI",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006113322",
+      "studentId": "B006113322",
+      "admissionNumber": "B006113322",
+      "assessmentNumber": "B006113322",
+      "fullName": "IDRIS MWINGA",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006129903",
+      "studentId": "B006129903",
+      "admissionNumber": "B006129903",
+      "assessmentNumber": "B006129903",
+      "fullName": "ALLAN MULI",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006428413",
+      "studentId": "B006428413",
+      "admissionNumber": "B006428413",
+      "assessmentNumber": "B006428413",
+      "fullName": "JOEL JEMBE",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006483726",
+      "studentId": "B006483726",
+      "admissionNumber": "B006483726",
+      "assessmentNumber": "B006483726",
+      "fullName": "PAULINE",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006537304",
+      "studentId": "B006537304",
+      "admissionNumber": "B006537304",
+      "assessmentNumber": "B006537304",
+      "fullName": "ABIGAEL JOY",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B006537319",
+      "studentId": "B006537319",
+      "admissionNumber": "B006537319",
+      "assessmentNumber": "B006537319",
+      "fullName": "JOYCE NADZUWA",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B008061699",
+      "studentId": "B008061699",
+      "admissionNumber": "B008061699",
+      "assessmentNumber": "B008061699",
+      "fullName": "LYDIA WAMBUA",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B008142088",
+      "studentId": "B008142088",
+      "admissionNumber": "B008142088",
+      "assessmentNumber": "B008142088",
+      "fullName": "MOHAMED",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "IRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-g5-B008149530",
+      "studentId": "B008149530",
+      "admissionNumber": "B008149530",
+      "assessmentNumber": "B008149530",
+      "fullName": "DANIEL FORTUNE",
+      "class": "Grade 5 Victors",
+      "grade": "Grade 5",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "specialNeeds": "None",
+      "religiousSubject": "CRE",
+      "language": "KIS",
+      "registeredBy": "Mr. Josephat Kobe",
+      "registeredByTeacherId": "tch-josephat",
+      "createdAt": "2026-01-08T08:00:00Z"
+    }
+  ],
+  "learners": [],
+  "teacherStudentLinks": [],
+  "marks": [],
+  "correctionRequests": [],
+  "attendance": [],
+  "assignments": [
+    {
+      "id": "asg-001",
+      "title": "Integrated Science: Laboratory Safety & Apparatus Classification",
+      "classId": "cls-jss-7a",
+      "className": "Grade 7A (JSS)",
+      "subjectId": "sub-sci",
+      "subjectName": "Integrated Science",
+      "teacherId": "tch-peter",
+      "teacherName": "Mr. Peter Juma Mwangi",
+      "description": "Sketch and categorize 5 basic laboratory instruments (Bunsen burner, beaker, test tube, measuring cylinder, tripod stand) and explain safety precautions when heating liquids.",
+      "instructions": "1. Prepare diagrams neatly on ruled foolscap or submit digital document.\n2. State two immediate first aid procedures for minor acid spills.\n3. Keep your write-up within 350 words.",
+      "attachmentName": "Lab_Safety_Guidelines_JSS7.pdf",
+      "maxMarks": 25,
+      "dueDate": "2026-09-18T17:00:00Z",
+      "createdAt": "2026-09-08T09:00:00Z",
+      "allowOnlineSubmission": true
+    },
+    {
+      "id": "asg-002",
+      "title": "Computer Science: Introduction to Python Variables & Data Types",
+      "classId": "cls-jss-7a",
+      "className": "Grade 7A (JSS)",
+      "subjectId": "sub-cs",
+      "subjectName": "Computer Science & Coding",
+      "teacherId": "tch-ict",
+      "teacherName": "Mr. Vitalice Odhiambo",
+      "description": "Write Python pseudo-code to calculate the perimeter and area of a school vegetable garden. Identify the integer and float variables used.",
+      "instructions": "Submit either your .py file or written logic explaining how inputs are captured from the user.",
+      "attachmentName": "Python_Variables_Exercise_Sheet.pdf",
+      "maxMarks": 20,
+      "dueDate": "2026-09-20T17:00:00Z",
+      "createdAt": "2026-09-09T08:00:00Z",
+      "allowOnlineSubmission": true
+    },
+    {
+      "id": "asg-003",
+      "title": "English Language: Narrative Composition on Environmental Conservation",
+      "classId": "cls-jss-7a",
+      "className": "Grade 7A (JSS)",
+      "subjectId": "sub-eng",
+      "subjectName": "English Language",
+      "teacherId": "tch-faith",
+      "teacherName": "Madam Faith Mwende Kilonzo",
+      "description": "Write a gripping 250-word narrative starting with: \"As the morning mist lifted over Mazeras hills, our school eco-warriors assembled at the gate...\"",
+      "instructions": "Focus on descriptive sensory adjectives, correct punctuation, and imaginative character portrayal.",
+      "maxMarks": 30,
+      "dueDate": "2026-09-22T17:00:00Z",
+      "createdAt": "2026-09-09T14:00:00Z",
+      "allowOnlineSubmission": true
+    }
+  ],
+  "submissions": [],
+  "enquiries": [],
+  "chatbotKnowledge": [
+    {
+      "id": "kb-1",
+      "category": "Identity & Location",
+      "question": "Where is Amani Junior Academy and JSS located?",
+      "keywords": [
+        "location",
+        "address",
+        "where",
+        "mazeras",
+        "postal",
+        "direction",
+        "place"
+      ],
+      "answer": "Amani Junior Academy and JSS is located in Mazeras, Kilifi County, Kenya (along the Mombasa-Nairobi corridor). Our official postal address is P.O. BOX 93-80114, MAZERAS, KENYA.",
+      "lastUpdated": "2026-01-10",
+      "helpfulCount": 42
+    },
+    {
+      "id": "kb-2",
+      "category": "Motto & Values",
+      "question": "What is the school motto and philosophy?",
+      "keywords": [
+        "motto",
+        "vision",
+        "mission",
+        "philosophy",
+        "values",
+        "strive to achieve"
+      ],
+      "answer": "Our official school motto is \"STRIVE TO ACHIEVE\". We are committed to nurturing holistic academic excellence, moral integrity, technological literacy, and creative leadership in every learner.",
+      "lastUpdated": "2026-01-10",
+      "helpfulCount": 38
+    },
+    {
+      "id": "kb-3",
+      "category": "Leadership & Contacts",
+      "question": "Who are the school leaders and what are their phone numbers?",
+      "keywords": [
+        "director",
+        "headteacher",
+        "principal",
+        "contact",
+        "phone",
+        "call",
+        "constance",
+        "nadhiri",
+        "vitalice"
+      ],
+      "answer": "Our School Director is CONSTANCE MWAKA POLE (Phone: 0718540922). Our Headteacher is NADHIRI CHACHA SALIM (Phone: 0114623408). Our Deputy Headteacher & ICT Lead is VITALICE ODHIAMBO.",
+      "lastUpdated": "2026-01-10",
+      "helpfulCount": 56
+    },
+    {
+      "id": "kb-4",
+      "category": "Admissions & Levels",
+      "question": "What classes and grades does Amani offer?",
+      "keywords": [
+        "classes",
+        "grades",
+        "admissions",
+        "pp1",
+        "pp2",
+        "jss",
+        "junior secondary",
+        "primary",
+        "intake",
+        "enroll"
+      ],
+      "answer": "Amani Junior Academy and JSS offers comprehensive CBC education across: 1. Early Years / Pre-Primary (PP1 & PP2), 2. Primary School (Grade 1 through Grade 6), and 3. Junior Secondary School (Grade 7, Grade 8, and Grade 9 JSS). Admissions are currently ongoing.",
+      "lastUpdated": "2026-01-10",
+      "helpfulCount": 65
+    },
+    {
+      "id": "kb-5",
+      "category": "Curriculum & Facilities",
+      "question": "What curriculum and facilities does the school have?",
+      "keywords": [
+        "curriculum",
+        "cbc",
+        "subjects",
+        "science",
+        "computer",
+        "ict",
+        "lab",
+        "facilities",
+        "sports"
+      ],
+      "answer": "We deliver Kenya's Competency-Based Curriculum (CBC) enriched with a modern ICT Computer & Coding Lab, Integrated Science Practical Stations, Creative Arts, Agricultural demonstration gardens, and spacious sports grounds.",
+      "lastUpdated": "2026-01-10",
+      "helpfulCount": 49
+    },
+    {
+      "id": "kb-6",
+      "category": "School Fees & Enquiries",
+      "question": "What is the school fees structure?",
+      "keywords": [
+        "fees",
+        "cost",
+        "tuition",
+        "payment",
+        "structure",
+        "how much"
+      ],
+      "answer": "School fees at Amani Junior Academy and JSS are structured per grade level (Early Years, Primary, and JSS). To receive our official approved fee structure, please click \"Admission Enquiry\" or contact Director Constance Mwaka Pole at 0718540922.",
+      "lastUpdated": "2026-01-10",
+      "helpfulCount": 71
+    }
+  ],
+  "unansweredQuestions": [],
+  "announcements": [
+    {
+      "id": "anc-001",
+      "title": "Mid-Term Academic Progress Clinics & Parent Consultations",
+      "category": "Academics",
+      "content": "All parents of Grade 1 through Grade 9 JSS are invited to individual academic consultation sessions with subject teachers on Saturday, 26th September. Your child's assessment portfolios will be reviewed.",
+      "targetAudience": "ALL",
+      "publishedDate": "2026-09-08",
+      "isPublished": true,
+      "isPinned": true,
+      "authorName": "Nadhiri Chacha Salim (Headteacher)"
+    },
+    {
+      "id": "anc-002",
+      "title": "Junior Secondary STEM & Robotics Exhibition Day",
+      "category": "General",
+      "content": "Our Grade 7, 8 and 9 learners will showcase computer programming projects, renewable solar energy models, and agricultural drip irrigation prototypes in the main hall.",
+      "targetAudience": "ALL",
+      "publishedDate": "2026-09-05",
+      "isPublished": true,
+      "authorName": "Vitalice Odhiambo (Deputy/ICT)"
+    },
+    {
+      "id": "anc-003",
+      "title": "Inter-House Sports Gala & Athletics Championship",
+      "category": "Sports",
+      "content": "The annual Amani Sports Day is scheduled for next month. Learners are divided into Blue Eagles, Gold Lions, Green Leopards, and White Falcons houses.",
+      "targetAudience": "ALL",
+      "publishedDate": "2026-09-02",
+      "isPublished": true,
+      "authorName": "Games Master & PE Department"
+    }
+  ],
+  "events": [
+    {
+      "id": "evt-001",
+      "title": "Term 1 General Parents & Teachers Association (PTA) Meeting",
+      "date": "2026-09-26",
+      "time": "09:00 AM - 01:00 PM",
+      "venue": "Amani School Assembly Pavilion, Mazeras",
+      "description": "Review of academic progress, CBC Grade 9 national transition guidelines, school infrastructure upgrades, and fee structure consultation.",
+      "targetAudience": "All Parents & Guardians",
+      "category": "Parents Meeting",
+      "imageUrl": "/amani_hero.jpg"
+    },
+    {
+      "id": "evt-002",
+      "title": "JSS Science & Technology Innovation Expo",
+      "date": "2026-10-08",
+      "time": "10:00 AM - 03:30 PM",
+      "venue": "Amani ICT & Science Complex",
+      "description": "Learners demonstrate hands-on scientific projects, software coding prototypes, and environmental conservation solutions.",
+      "targetAudience": "Learners, Parents & Visiting Schools",
+      "category": "Academic",
+      "imageUrl": "/amani_ict.jpg"
+    },
+    {
+      "id": "evt-003",
+      "title": "Mazeras Sub-County Interschool Athletics & Ball Games",
+      "date": "2026-10-18",
+      "time": "08:30 AM - 04:00 PM",
+      "venue": "Mazeras Sports Stadium",
+      "description": "Amani Junior Academy athletes represent our school in 100m, 400m relay, volleyball, and junior soccer tournaments.",
+      "targetAudience": "School Athletes & Supporters",
+      "category": "Sports",
+      "imageUrl": "/amani_hero.jpg"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "gal-01",
+      "title": "State-of-the-Art ICT & Coding Lab",
+      "category": "Science & ICT Labs",
+      "imageUrl": "/amani_ict.jpg",
+      "description": "Learners mastering computer science fundamentals and coding skills under the guidance of Deputy Headteacher Vitalice Odhiambo.",
+      "eventDate": "2026-08-20"
+    },
+    {
+      "id": "gal-02",
+      "title": "Amani School Campus & Academic Pavilion",
+      "category": "Campus & Classrooms",
+      "imageUrl": "/amani_hero.jpg",
+      "description": "Serene, secure, and modern campus environment tailored for focused primary and junior secondary learning in Mazeras.",
+      "eventDate": "2026-08-15"
+    },
+    {
+      "id": "gal-03",
+      "title": "Junior Secondary Science & Classroom Complex Construction",
+      "category": "Infrastructure & Expansion",
+      "imageUrl": "/images/building_construction_site_1788940263609.jpg",
+      "description": "Ongoing expansion of modern CBC Grade 7–9 junior secondary classrooms, integrated science laboratory, and multi-purpose workshop blocks.",
+      "eventDate": "2026-08-10"
+    },
+    {
+      "id": "gal-04",
+      "title": "Modern ICT Supplies, Laptops & Workstations",
+      "category": "Science & ICT Labs",
+      "imageUrl": "/images/ict_supplies_laptops_printers_1788940241241.jpg",
+      "description": "Procurement and delivery of digital equipment, pupil laptops, robotics components, and high-speed printers for STEM coursework.",
+      "eventDate": "2026-07-30"
+    },
+    {
+      "id": "gal-05",
+      "title": "Deep Borehole Drilling & Clean Water Equipping",
+      "category": "Infrastructure & Expansion",
+      "imageUrl": "/images/borehole_drilling_equipping_1788940228132.jpg",
+      "description": "Campus solar-powered borehole drilling project ensuring 100% clean, constant running water, hygiene sanitation, and organic agricultural irrigation.",
+      "eventDate": "2026-07-15"
+    },
+    {
+      "id": "gal-06",
+      "title": "Civil Works, Sports Courts & Assembly Quadrangle",
+      "category": "Campus & Classrooms",
+      "imageUrl": "/images/civil_works_showcase_1788936737963.jpg",
+      "description": "Completed civil paving and drainage for the assembly quadrangle, ceremonial flag lawns, and athletic sports activity grounds.",
+      "eventDate": "2026-06-25"
+    },
+    {
+      "id": "gal-07",
+      "title": "Dedicated School Access Road Paving & Transit Way",
+      "category": "Infrastructure & Expansion",
+      "imageUrl": "/images/road_construction_paving_1788940252114.jpg",
+      "description": "Direct tarmac and paved road infrastructure connecting the campus to Mazeras town center, guaranteeing safe, dust-free school van transport.",
+      "eventDate": "2026-06-10"
+    },
+    {
+      "id": "gal-08",
+      "title": "Golden Span Campus Compound & Panoramic Architecture",
+      "category": "Campus & Classrooms",
+      "imageUrl": "/images/golden_span_hero_1788936721454.jpg",
+      "description": "Elevated panoramic view of the school landscape, administrative pavilion, and secure gated compound in Mazeras.",
+      "eventDate": "2026-05-20"
+    },
+    {
+      "id": "gal-09",
+      "title": "Institutional Directorate & Community Governance Meeting",
+      "category": "Governance & Leadership",
+      "imageUrl": "/director_cynthia.jpg",
+      "description": "Executive leadership consultative session deliberating on student safety standards, CBC curriculum accreditation, and academic bursaries.",
+      "eventDate": "2026-05-05"
+    },
+    {
+      "id": "gal-10",
+      "title": "School Strategic Development & Academic Quality Review",
+      "category": "Governance & Leadership",
+      "imageUrl": "/director_prestine.jpg",
+      "description": "Board of Management and senior administration planning session benchmarking KNEC junior secondary school evaluation criteria.",
+      "eventDate": "2026-04-18"
+    },
+    {
+      "id": "gal-11",
+      "title": "Mazeras Sub-County Interschool Athletics & Ball Games",
+      "category": "Sports",
+      "imageUrl": "/images/civil_works_showcase_1788936737963.jpg",
+      "description": "Amani Junior Academy athletes competing in Mazeras zonal track events, soccer tournaments, and physical education drills on our sports fields.",
+      "eventDate": "2026-04-10"
+    },
+    {
+      "id": "gal-12",
+      "title": "Hands-on Integrated Science & STEM Discovery",
+      "category": "Academics",
+      "imageUrl": "/images/building_construction_site_1788940263609.jpg",
+      "description": "Junior secondary learners conducting biological and physics experiments in our modern CBC laboratory and classroom complex.",
+      "eventDate": "2026-03-25"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-001",
+      "title": "Amani Official Admission Application Form 2026",
+      "category": "Admissions",
+      "fileSize": "420 KB",
+      "fileType": "PDF",
+      "accessLevel": "PUBLIC",
+      "downloadUrl": "#",
+      "uploadedAt": "2026-01-05",
+      "description": "Official student registration and admission biodata form for Early Years, Primary, and Junior Secondary (JSS)."
+    },
+    {
+      "id": "doc-002",
+      "title": "Junior Secondary School (JSS) Curriculum & Pathways Guide",
+      "category": "Academic",
+      "fileSize": "850 KB",
+      "fileType": "PDF",
+      "accessLevel": "PUBLIC",
+      "downloadUrl": "#",
+      "uploadedAt": "2026-01-06",
+      "description": "Comprehensive overview of CBC Grade 7-9 learning areas, continuous assessments, and senior school transitions."
+    },
+    {
+      "id": "doc-003",
+      "title": "Term 1 2026 Academic Calendar & Important Dates",
+      "category": "Calendars",
+      "fileSize": "290 KB",
+      "fileType": "PDF",
+      "accessLevel": "PUBLIC",
+      "downloadUrl": "#",
+      "uploadedAt": "2026-01-08",
+      "description": "Opening and closing schedules, mid-term dates, examination windows, and PTA conference timings."
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-1",
+      "title": "New Admission Enquiry Received",
+      "message": "Dr. Harrison Mwamburi submitted an enquiry for Grade 7 & 8 JSS admission.",
+      "type": "enquiry",
+      "createdAt": "2026-09-10T05:20:00Z",
+      "isRead": false,
+      "actionUrl": "/admin?tab=enquiries"
+    },
+    {
+      "id": "notif-2",
+      "title": "Continuous Assessment Results Submitted",
+      "message": "Mr. Peter Juma Mwangi submitted CAT 1 results for Grade 7A Integrated Science.",
+      "type": "assignment",
+      "createdAt": "2026-09-10T14:00:00Z",
+      "isRead": false,
+      "actionUrl": "/admin?tab=results"
+    },
+    {
+      "id": "notif-3",
+      "title": "SMS Alert Dispatched",
+      "message": "SMS notification delivered to Director Constance Mwaka Pole (0718540922).",
+      "type": "system",
+      "createdAt": "2026-09-10T05:21:00Z",
+      "isRead": true
+    }
+  ],
+  "smsLogs": [
+    {
+      "id": "sms-001",
+      "recipientPhone": "0718540922",
+      "recipientName": "Constance Mwaka Pole (Director)",
+      "message": "AMANI WEBSITE ALERT: New admission enquiry received from Dr. Harrison Mwamburi (0722334455) for Grade 7 & 8 JSS. Please log into dashboard to view.",
+      "purpose": "ADMISSION_ALERT",
+      "status": "DELIVERED",
+      "sentAt": "2026-09-10T05:21:00Z",
+      "provider": "AfricasTalking Kenya Gateway"
+    },
+    {
+      "id": "sms-002",
+      "recipientPhone": "0114623408",
+      "recipientName": "Nadhiri Chacha Salim (Headteacher)",
+      "message": "AMANI ALERT: Campus visit booking enquiry from Fatuma Mbeyu Juma (0711998877) for PP2 admission.",
+      "purpose": "ENQUIRY_ALERT",
+      "status": "DELIVERED",
+      "sentAt": "2026-09-09T15:41:00Z",
+      "provider": "AfricasTalking Kenya Gateway"
+    },
+    {
+      "id": "sms-otp-1789460444331",
+      "recipientPhone": "0746529712",
+      "recipientName": "Vitalice Odhiambo",
+      "message": "Your Amani Junior Academy password reset code is: 944493. Valid for 15 minutes. Never disclose this code to anyone.",
+      "purpose": "OTP",
+      "status": "DELIVERED",
+      "sentAt": "2026-09-15T08:20:44.331Z",
+      "provider": "AfricasTalking Simulator"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "log-1789969552359-555",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed ADRIAN KAHINDI (B005129745, Adm: B005129745) from the central database.",
+      "timestamp": "2026-09-21T05:45:52.359Z"
+    },
+    {
+      "id": "log-1789969540473-772",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Justine Cheruiyot (STU-0118, Adm: 0118) from the central database.",
+      "timestamp": "2026-09-21T05:45:40.473Z"
+    },
+    {
+      "id": "log-1789969536080-453",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Sheila Chepkoech (STU-0126, Adm: 0126) from the central database.",
+      "timestamp": "2026-09-21T05:45:36.080Z"
+    },
+    {
+      "id": "log-1789969528278-505",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Victor Kimutai (STU-0127, Adm: 0127) from the central database.",
+      "timestamp": "2026-09-21T05:45:28.278Z"
+    },
+    {
+      "id": "log-1789969523359-245",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Joy Chelangat (STU-0117, Adm: 0117) from the central database.",
+      "timestamp": "2026-09-21T05:45:23.359Z"
+    },
+    {
+      "id": "log-1789969513655-35",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Hillary Kipkoech (STU-0116, Adm: 0116) from the central database.",
+      "timestamp": "2026-09-21T05:45:13.655Z"
+    },
+    {
+      "id": "log-1789969508359-853",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Gladys Chepkirui (STU-0115, Adm: 0115) from the central database.",
+      "timestamp": "2026-09-21T05:45:08.359Z"
+    },
+    {
+      "id": "log-1789969504808-572",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Felix Kiprono (STU-0114, Adm: 0114) from the central database.",
+      "timestamp": "2026-09-21T05:45:04.808Z"
+    },
+    {
+      "id": "log-1789969501295-159",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Faith Wanjiku (STU-0134, Adm: 0134) from the central database.",
+      "timestamp": "2026-09-21T05:45:01.295Z"
+    },
+    {
+      "id": "log-1789969498247-969",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Faith Chepkorir (STU-0113, Adm: 0113) from the central database.",
+      "timestamp": "2026-09-21T05:44:58.247Z"
+    },
+    {
+      "id": "log-1789969494959-119",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Edwin Kimutai (STU-0112, Adm: 0112) from the central database.",
+      "timestamp": "2026-09-21T05:44:54.959Z"
+    },
+    {
+      "id": "log-1789969491802-128",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Dorcas Chebet (STU-0111, Adm: 0111) from the central database.",
+      "timestamp": "2026-09-21T05:44:51.802Z"
+    },
+    {
+      "id": "log-1789969488878-262",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Dennis Kiprotich (STU-0110, Adm: 0110) from the central database.",
+      "timestamp": "2026-09-21T05:44:48.878Z"
+    },
+    {
+      "id": "log-1789969485665-144",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Daisy Chepkoech (STU-0109, Adm: 0109) from the central database.",
+      "timestamp": "2026-09-21T05:44:45.665Z"
+    },
+    {
+      "id": "log-1789969482487-137",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Collins Kipchirchir (STU-0108, Adm: 0108) from the central database.",
+      "timestamp": "2026-09-21T05:44:42.487Z"
+    },
+    {
+      "id": "log-1789969478705-764",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Brian Safari (STU-0107, Adm: 0107) from the central database.",
+      "timestamp": "2026-09-21T05:44:38.705Z"
+    },
+    {
+      "id": "log-1789969473983-714",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Brian Kiptoo (STU-0106, Adm: 0106) from the central database.",
+      "timestamp": "2026-09-21T05:44:33.983Z"
+    },
+    {
+      "id": "log-1789969468760-140",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Brenda Katana (STU-0105, Adm: 0105) from the central database.",
+      "timestamp": "2026-09-21T05:44:28.760Z"
+    },
+    {
+      "id": "log-1789969463045-821",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Vincent Kipchumba (STU-0128, Adm: 0128) from the central database.",
+      "timestamp": "2026-09-21T05:44:23.045Z"
+    },
+    {
+      "id": "log-1789969454842-327",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Arnold Mweri (STU-0135, Adm: 0135) from the central database.",
+      "timestamp": "2026-09-21T05:44:14.842Z"
+    },
+    {
+      "id": "log-1789969448747-106",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Aisha Ndinda (STU-0137, Adm: 0137) from the central database.",
+      "timestamp": "2026-09-21T05:44:08.747Z"
+    },
+    {
+      "id": "log-1789969436993-342",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Abigael Chepkemoi (STU-0103, Adm: 0103) from the central database.",
+      "timestamp": "2026-09-21T05:43:56.993Z"
+    },
+    {
+      "id": "log-1789969150199-471",
+      "userId": "usr-sys",
+      "userName": "Mr. Josephat Kobe",
+      "userRole": "TEACHER",
+      "action": "Successful Login",
+      "details": "Mr. Josephat Kobe (TEACHER) logged in to the management portal.",
+      "timestamp": "2026-09-21T05:39:10.199Z"
+    },
+    {
+      "id": "log-1789968509747-171",
+      "userId": "usr-sys",
+      "userName": "Vitalice Odhiambo",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Successful Login",
+      "details": "Vitalice Odhiambo (CHIEF_ADMIN) logged in to the management portal.",
+      "timestamp": "2026-09-21T05:28:29.747Z"
+    },
+    {
+      "id": "log-1789642505716-842",
+      "userId": "usr-sys",
+      "userName": "Madam Raheli Wali",
+      "userRole": "TEACHER",
+      "action": "Successful Login",
+      "details": "Madam Raheli Wali (TEACHER) logged in to the management portal.",
+      "timestamp": "2026-09-17T10:55:05.716Z"
+    },
+    {
+      "id": "log-1789642503001-408",
+      "userId": "usr-sys",
+      "userName": "Constance Mwaka Pole",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Successful Login",
+      "details": "Constance Mwaka Pole (CHIEF_ADMIN) logged in to the management portal.",
+      "timestamp": "2026-09-17T10:55:03.001Z"
+    },
+    {
+      "id": "log-1789642500541-973",
+      "userId": "usr-sys",
+      "userName": "Vitalice Odhiambo",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Successful Login",
+      "details": "Vitalice Odhiambo (CHIEF_ADMIN) logged in to the management portal.",
+      "timestamp": "2026-09-17T10:55:00.541Z"
+    },
+    {
+      "id": "log-1789642308888-839",
+      "userId": "usr-sys",
+      "userName": "Madam Raheli Wali",
+      "userRole": "TEACHER",
+      "action": "Default Credentials Verified",
+      "details": "Staff authenticated with initial default credentials; mandatory security profile completion required.",
+      "timestamp": "2026-09-17T10:51:48.888Z"
+    },
+    {
+      "id": "log-1789642308826-995",
+      "userId": "usr-sys",
+      "userName": "Nadhiri Chacha Salim",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Default Credentials Verified",
+      "details": "Staff authenticated with initial default credentials; mandatory security profile completion required.",
+      "timestamp": "2026-09-17T10:51:48.826Z"
+    },
+    {
+      "id": "log-1789642308761-864",
+      "userId": "usr-sys",
+      "userName": "Constance Mwaka Pole",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Default Credentials Verified",
+      "details": "Staff authenticated with initial default credentials; mandatory security profile completion required.",
+      "timestamp": "2026-09-17T10:51:48.761Z"
+    },
+    {
+      "id": "log-1789642305550-410",
+      "userId": "usr-sys",
+      "userName": "Vitalice Odhiambo",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Default Credentials Verified",
+      "details": "Staff authenticated with initial default credentials; mandatory security profile completion required.",
+      "timestamp": "2026-09-17T10:51:45.550Z"
+    },
+    {
+      "id": "log-1789642086649-310",
+      "userId": "usr-sys",
+      "userName": "Vitalice Odhiambo",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Default Credentials Verified",
+      "details": "Staff authenticated with initial default credentials; mandatory security profile completion required.",
+      "timestamp": "2026-09-17T10:48:06.649Z"
+    },
+    {
+      "id": "log-1789642084263-78",
+      "userId": "usr-sys",
+      "userName": "Constance Mwaka Pole",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Default Credentials Verified",
+      "details": "Staff authenticated with initial default credentials; mandatory security profile completion required.",
+      "timestamp": "2026-09-17T10:48:04.263Z"
+    },
+    {
+      "id": "log-1789642060073-895",
+      "userId": "usr-sys",
+      "userName": "Constance Mwaka Pole",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Default Credentials Verified",
+      "details": "Staff authenticated with initial default credentials; mandatory security profile completion required.",
+      "timestamp": "2026-09-17T10:47:40.073Z"
+    },
+    {
+      "id": "log-1789642047588-225",
+      "userId": "usr-sys",
+      "userName": "Constance Mwaka Pole",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Default Credentials Verified",
+      "details": "Staff authenticated with initial default credentials; mandatory security profile completion required.",
+      "timestamp": "2026-09-17T10:47:27.588Z"
+    },
+    {
+      "id": "log-1789642041956-20",
+      "userId": "usr-sys",
+      "userName": "Constance Mwaka Pole",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Failed Login Attempt",
+      "details": "Incorrect password entered for director",
+      "timestamp": "2026-09-17T10:47:21.956Z"
+    },
+    {
+      "id": "log-1789642037765-953",
+      "userId": "usr-sys",
+      "userName": "Constance Mwaka Pole",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Failed Login Attempt",
+      "details": "Incorrect password entered for director",
+      "timestamp": "2026-09-17T10:47:17.765Z"
+    },
+    {
+      "id": "log-1789460444332-948",
+      "userId": "usr-sys",
+      "userName": "Vitalice Odhiambo",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Password Reset OTP Requested",
+      "details": "OTP requested for vitalice. Reset code sent to 0746529712.",
+      "timestamp": "2026-09-15T08:20:44.332Z"
+    },
+    {
+      "id": "log-1789373804394-27",
+      "userId": "usr-sys",
+      "userName": "Constance Mwaka Pole",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Successful Login",
+      "details": "Constance Mwaka Pole (CHIEF_ADMIN) logged in to the management portal.",
+      "timestamp": "2026-09-14T08:16:44.394Z"
+    },
+    {
+      "id": "log-001",
+      "userId": "usr-dir-1",
+      "userName": "Constance Mwaka Pole",
+      "userRole": "CHIEF_ADMIN",
+      "action": "System Initialized",
+      "details": "Director Constance Mwaka Pole initialized the secure Amani school management platform with motto \"STRIVE TO ACHIEVE\".",
+      "timestamp": "2026-09-10T07:15:00Z"
+    },
+    {
+      "id": "log-002",
+      "userId": "usr-ht-1",
+      "userName": "Nadhiri Chacha Salim",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Results Locked & Approved",
+      "details": "Headteacher reviewed, approved and locked CAT 1 results for Grade 7A (John Otieno STU-00025, CRE, Math, Science, Pre-Tech).",
+      "timestamp": "2026-09-09T08:30:00Z"
+    },
+    {
+      "id": "log-003",
+      "userId": "usr-ict-1",
+      "userName": "Vitalice Odhiambo",
+      "userRole": "CHIEF_ADMIN",
+      "action": "Central Database Synchronized",
+      "details": "Deputy Headteacher / ICT Admin Vitalice verified central student registry (unique IDs STU-00001 through STU-00025).",
+      "timestamp": "2026-09-08T16:00:00Z"
+    }
+  ],
+  "feeStructures": [
+    {
+      "id": "fee-primary-1-6",
+      "title": "Grade 1 to Grade 6 Fee Structure (Primary & ECD)",
+      "category": "Grade 1 - 6",
+      "headerTitle": "AMANI JUNIOR ACADEMY & JUNIOR SECONDARY SCHOOL\nP.O Box 93- 80114, Mazeras. Tel: 0718540922",
+      "applicableGrades": [
+        "Playgroup",
+        "PP1",
+        "PP2",
+        "Grade 1",
+        "Grade 2",
+        "Grade 3",
+        "Grade 4",
+        "Grade 5",
+        "Grade 6"
+      ],
+      "tableHeaders": [
+        "CLASS",
+        "1ST TERM",
+        "2ND TERM",
+        "3RD TERM",
+        "YEAR TOTAL"
+      ],
+      "rows": [
+        {
+          "gradeOrItem": "PLAYGROUP",
+          "term1": 3000,
+          "term2": 3000,
+          "term3": 3000,
+          "yearTotal": 9000
+        },
+        {
+          "gradeOrItem": "PP1",
+          "term1": 4500,
+          "term2": 4500,
+          "term3": 4000,
+          "yearTotal": 13000
+        },
+        {
+          "gradeOrItem": "PP2",
+          "term1": 5000,
+          "term2": 5000,
+          "term3": 4500,
+          "yearTotal": 14500
+        },
+        {
+          "gradeOrItem": "GRADE 1",
+          "term1": 5200,
+          "term2": 5200,
+          "term3": 4800,
+          "yearTotal": 15200
+        },
+        {
+          "gradeOrItem": "GRADE 2",
+          "term1": 5200,
+          "term2": 5200,
+          "term3": 4800,
+          "yearTotal": 15200
+        },
+        {
+          "gradeOrItem": "GRADE 3",
+          "term1": 5200,
+          "term2": 5200,
+          "term3": 4800,
+          "yearTotal": 15200
+        },
+        {
+          "gradeOrItem": "GRADE 4",
+          "term1": 5500,
+          "term2": 5500,
+          "term3": 5000,
+          "yearTotal": 16000
+        },
+        {
+          "gradeOrItem": "GRADE 5",
+          "term1": 5500,
+          "term2": 5500,
+          "term3": 5000,
+          "yearTotal": 16000
+        },
+        {
+          "gradeOrItem": "GRADE 6",
+          "term1": 6500,
+          "term2": 6500,
+          "term3": 6000,
+          "yearTotal": 19000
+        }
+      ],
+      "extraRowNote": "COMPUTER FROM GRADE 1 - 6: 500/= PER TERM (Paid in Cash)",
+      "otherPayments": [
+        {
+          "item": "TRANSPORT",
+          "amount": "Within Mazeras Ksh. 4,000/= | Outside Mazeras Ksh. 5,000/="
+        },
+        {
+          "item": "INTERVIEW FEE",
+          "amount": "KSH. 200"
+        },
+        {
+          "item": "ADMISSION FEE",
+          "amount": "KSH. 1,000"
+        },
+        {
+          "item": "ECDE PLASTIC CHAIR",
+          "amount": "Required for ECD Learners"
+        },
+        {
+          "item": "SCHOOL DIARY",
+          "amount": "KSH. 150"
+        },
+        {
+          "item": "SCHOOL TIE",
+          "amount": "KSH. 150"
+        },
+        {
+          "item": "LUNCH MEAL",
+          "amount": "KSH. 3,000 PER TERM"
+        },
+        {
+          "item": "PORRIDGE",
+          "amount": "KSH. 600 PER TERM"
+        },
+        {
+          "item": "SCHOOL BADGE",
+          "amount": "KSH. 100"
+        },
+        {
+          "item": "P.E KIT (TRACK SUIT)",
+          "amount": "KSH. 2,350"
+        },
+        {
+          "item": "EXAM FEE",
+          "amount": "KSH. 250 (ECD - PP1 & PP2) | KSH. 450 (GRADE 1 - 4) | KSH. 650 (GRADE 5 - 6)"
+        },
+        {
+          "item": "ASSESSMENT REPORT",
+          "amount": "KSH. 400/="
+        }
+      ],
+      "requirements": [
+        "Birth certificate (Photocopy)",
+        "Parent / guardian serving contacts / phone number / ID photocopy"
+      ],
+      "feesPolicy": "SCHOOL FEES SHOULD BE PAID AT LEAST 1/2 OF YOUR SCHOOL FEES ON OPENING DAY AND BE CLEARED BY THE END OF THE 2ND MONTH OF EVERY TERM. FAILURE TO CLEAR BY THE END OF 2ND MONTH WILL ATTRACT A 20% PENALTY WHICH SHALL BE ADDED TO YOUR FEES.",
+      "uniforms": {
+        "boys": "NURSERY: Checked blue shirt with navy blue strips. PRIMARY: Light blue shirt / navy blue short.",
+        "girls": "NURSERY: Checked blue dress with navy blue strips. PRIMARY: Light blue shirt / navy blue dress.",
+        "description": "Official school uniform sets available through school administration."
+      },
+      "bankAccounts": [
+        {
+          "method": "KCB Bank Account",
+          "details": "KCB BANK ACCOUNT NO. 1169273831 OR KCB MTAANI AGENTS",
+          "accountNumber": "1169273831"
+        },
+        {
+          "method": "M-PESA Paybill",
+          "details": "MPESA PAYBILL: 522123 | ACCOUNT NUMBER: 62138K + PUPIL’S NAME",
+          "paybill": "522123"
+        }
+      ],
+      "lastUpdated": "2026-09-19",
+      "updatedBy": "School Bursar & Chief Administration"
+    },
+    {
+      "id": "fee-jss-grade-7",
+      "title": "Grade 7 (Junior Secondary School) Fee Structure",
+      "category": "Grade 7",
+      "headerTitle": "AMANI JUNIOR ACADEMY JUNIOR SECONDARY SCHOOL\nP.O Box 93- 80114, Mazeras. Tel: 0718540922",
+      "applicableGrades": [
+        "Grade 7",
+        "Grade 7A",
+        "Grade 7B"
+      ],
+      "tableHeaders": [
+        "ITEM",
+        "1ST TERM",
+        "2ND TERM",
+        "3RD TERM",
+        "YEAR TOTAL"
+      ],
+      "rows": [
+        {
+          "gradeOrItem": "FEE",
+          "term1": 6500,
+          "term2": 6500,
+          "term3": 6200,
+          "yearTotal": 19200
+        },
+        {
+          "gradeOrItem": "COMPUTER",
+          "term1": 500,
+          "term2": 500,
+          "term3": 500,
+          "yearTotal": 1500
+        },
+        {
+          "gradeOrItem": "MAINTENANCE",
+          "term1": 300,
+          "term2": 300,
+          "term3": 300,
+          "yearTotal": 900
+        },
+        {
+          "gradeOrItem": "TOTAL",
+          "term1": 7300,
+          "term2": 7300,
+          "term3": 7000,
+          "yearTotal": 21600
+        }
+      ],
+      "extraRowNote": "Total per term: Term 1: Ksh. 7,300 | Term 2: Ksh. 7,300 | Term 3: Ksh. 7,000 | Year Total: Ksh. 21,600",
+      "otherPayments": [
+        {
+          "item": "TRANSPORT",
+          "amount": "Within Mazeras Ksh. 4,000/= | Outside Mazeras Ksh. 5,000/= (One way)"
+        },
+        {
+          "item": "ADMISSION FEE",
+          "amount": "KSH. 1,500"
+        },
+        {
+          "item": "REAM PAPER",
+          "amount": "ONCE PER YEAR (JANUARY)"
+        },
+        {
+          "item": "ASSESSMENT BOOK",
+          "amount": "KSH. 400"
+        },
+        {
+          "item": "TOUR FEE",
+          "amount": "(SUBJECT TO CHANGE)"
+        },
+        {
+          "item": "SCHOOL BADGE",
+          "amount": "KSH. 200"
+        },
+        {
+          "item": "EXAM FEE",
+          "amount": "KSH. 650 PER TERM"
+        },
+        {
+          "item": "LUNCH MEAL",
+          "amount": "KSH. 3,000 PER TERM"
+        }
+      ],
+      "requirements": [
+        "Birth certificate (Photocopy)",
+        "Mathematical set",
+        "Parent/guardian serving contacts/phone number",
+        "Fee payments slip/receipt",
+        "Transport is for those who pay for the service \"picking & dropping\"",
+        "All fee payments should be wholly done for the term and in the bank."
+      ],
+      "feesPolicy": "All fee payments should be wholly completed for the term in the bank or via official school M-Pesa paybill. Keep bank slip for bursary clearance.",
+      "uniforms": {
+        "boys": "White shirt, navy blue trouser, navy blue tie with white strips, navy blue blazer, navy blue sweater with a badge, navy blue tracksuits with white t-shirts with collar.",
+        "girls": "White blouse, navy blue box pleat skirt, navy blue tie with white strips, navy blue blazer, navy blue sweater with a badge, white socks with blue strips at top, navy blue tracksuits with white t-shirts with collar."
+      },
+      "bankAccounts": [
+        {
+          "method": "M-PESA Paybill (Junior Secondary)",
+          "details": "MPESA PAYBILL: 4404404 | ACCOUNT NUMBER: PB0755 + PUPIL’S NAME",
+          "paybill": "4404404"
+        }
+      ],
+      "lastUpdated": "2026-09-19",
+      "updatedBy": "School Bursar & Chief Administration"
+    },
+    {
+      "id": "fee-jss-grade-8",
+      "title": "Grade 8 (Junior Secondary School) Fee Structure",
+      "category": "Grade 8",
+      "headerTitle": "AMANI JUNIOR ACADEMY JUNIOR SECONDARY SCHOOL\nP.O Box 93- 80114, Mazeras. Tel: 0718540922",
+      "applicableGrades": [
+        "Grade 8",
+        "Grade 8 Champions"
+      ],
+      "tableHeaders": [
+        "ITEM",
+        "1ST TERM",
+        "2ND TERM",
+        "3RD TERM",
+        "YEAR TOTAL"
+      ],
+      "rows": [
+        {
+          "gradeOrItem": "FEE",
+          "term1": 7000,
+          "term2": 7000,
+          "term3": 6500,
+          "yearTotal": 20500
+        },
+        {
+          "gradeOrItem": "COMPUTER",
+          "term1": 500,
+          "term2": 500,
+          "term3": 500,
+          "yearTotal": 1500
+        },
+        {
+          "gradeOrItem": "MAINTENANCE",
+          "term1": 300,
+          "term2": 300,
+          "term3": 300,
+          "yearTotal": 900
+        },
+        {
+          "gradeOrItem": "TOTAL",
+          "term1": 7800,
+          "term2": 7800,
+          "term3": 7300,
+          "yearTotal": 22900
+        }
+      ],
+      "extraRowNote": "Total per term: Term 1: Ksh. 7,800 | Term 2: Ksh. 7,800 | Term 3: Ksh. 7,300 | Year Total: Ksh. 22,900",
+      "otherPayments": [
+        {
+          "item": "TRANSPORT",
+          "amount": "Within Mazeras Ksh. 4,000/= | Outside Mazeras Ksh. 5,000/="
+        },
+        {
+          "item": "ADMISSION FEE",
+          "amount": "KSH. 1,500"
+        },
+        {
+          "item": "REAM PAPER",
+          "amount": "ONCE PER YEAR (JANUARY)"
+        },
+        {
+          "item": "ASSESSMENT BOOK",
+          "amount": "KSH. 500"
+        },
+        {
+          "item": "TOUR FEE",
+          "amount": "(SUBJECT TO CHANGE)"
+        },
+        {
+          "item": "SCHOOL BADGE",
+          "amount": "KSH. 200"
+        },
+        {
+          "item": "EXAM FEE",
+          "amount": "KSH. 800 PER TERM"
+        },
+        {
+          "item": "LUNCH MEAL",
+          "amount": "KSH. 3,000 PER TERM"
+        }
+      ],
+      "requirements": [
+        "Birth certificate (Photocopy)",
+        "Mathematical set",
+        "Parent/guardian serving contacts/phone number",
+        "Fee payments slip/receipt",
+        "Transport is for those who pay for the service \"picking & dropping\"",
+        "All fee payments should be wholly done for the term and in the bank."
+      ],
+      "feesPolicy": "All fee payments should be wholly completed for the term in the bank or via official school M-Pesa paybill. Keep bank slip for bursary clearance.",
+      "uniforms": {
+        "boys": "White shirt, navy blue trouser, navy blue tie with white strips, navy blue blazer, navy blue sweater with a badge, navy blue tracksuits with white t-shirts with collar.",
+        "girls": "White blouse, navy blue box pleat skirt, navy blue tie with white strips, navy blue blazer, navy blue sweater with a badge, white socks with blue strips at top, navy blue tracksuits with white t-shirts with collar."
+      },
+      "bankAccounts": [
+        {
+          "method": "M-PESA Paybill (Junior Secondary)",
+          "details": "MPESA PAYBILL: 4404404 | ACCOUNT NUMBER: PB0755 + PUPIL’S NAME",
+          "paybill": "4404404"
+        }
+      ],
+      "lastUpdated": "2026-09-19",
+      "updatedBy": "School Bursar & Chief Administration"
+    }
+  ],
+  "analytics": {
+    "totalVisitors": 1420,
+    "totalPageViews": 4140,
+    "totalChatbotQueries": 280,
+    "pageViewsByPath": {
+      "/": 1650,
+      "/about": 720,
+      "/academics": 890,
+      "/admissions": 640,
+      "/teachers": 490,
+      "/gallery": 380
+    }
+  }
+}

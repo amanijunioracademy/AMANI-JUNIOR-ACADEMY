@@ -19,6 +19,7 @@ import {
   EnquiryStatus,
 } from '../types';
 import { localDb } from './localDatabase';
+import { syncService } from './syncService';
 import { FeeStructureItem, initialFeeStructures } from '../data/feeStructuresData';
 import {
   initialSchoolSettings,
@@ -252,7 +253,15 @@ export const api = {
     if (params?.teacherId) q.append('teacherId', params.teacherId);
     const url = q.toString() ? `/api/students?${q.toString()}` : '/api/students';
 
-    return callApiWithFallback<Student[]>(url, undefined, () => localDb.getStudents(params));
+    return callApiWithFallback<Student[]>(url, undefined, () => localDb.getStudents(params)).then((students) => {
+      // If full list was loaded, keep local cache warm
+      if (Array.isArray(students) && !params?.search && !params?.class && !params?.grade && !params?.teacherId) {
+        try {
+          localStorage.setItem('amani_students', JSON.stringify(students));
+        } catch {}
+      }
+      return students;
+    });
   },
 
   async getStudent(idOrStudentId: string) {
@@ -264,38 +273,126 @@ export const api = {
   },
 
   async createStudent(payload: Partial<Student> & { confirmDuplicate?: boolean }) {
-    return callApiWithFallback(
-      '/api/students',
-      {
+    try {
+      const res = await fetch('/api/students', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      },
-      () => localDb.createStudent(payload)
-    );
+      });
+
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || data.message || `Failed to register student (Status ${res.status})`);
+        }
+        if (data.student) {
+          // Update local cache immediately
+          const current = localDb.getStudents();
+          const idx = current.findIndex((s) => s.studentId === data.student.studentId || s.id === data.student.id);
+          if (idx >= 0) current[idx] = data.student;
+          else current.unshift(data.student);
+          localStorage.setItem('amani_students', JSON.stringify(current));
+          syncService.notifyDataChange();
+        }
+        return data;
+      }
+      throw new Error('Non-JSON response received from central server');
+    } catch (err: any) {
+      // Check if network error/offline: fallback to local and queue in sync outbox
+      const isNetworkError =
+        err.name === 'TypeError' ||
+        (err.message &&
+          (err.message.includes('Failed to fetch') ||
+            err.message.includes('NetworkError') ||
+            err.message.includes('Unexpected token') ||
+            err.message.includes('not valid JSON')));
+
+      if (isNetworkError) {
+        const localRes = localDb.createStudent(payload);
+        if (localRes.student) {
+          syncService.queueOutboxItem({
+            type: 'STUDENT',
+            action: 'CREATE',
+            payload: localRes.student,
+          });
+          syncService.notifyDataChange();
+        }
+        return localRes;
+      }
+      throw err;
+    }
   },
 
   async updateStudent(id: string, updates: Partial<Student>) {
-    return callApiWithFallback(
-      `/api/students/${id}`,
-      {
+    try {
+      const res = await fetch(`/api/students/${encodeURIComponent(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
-      },
-      () => localDb.updateStudent(id, updates)
-    );
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || `Failed to update student`);
+      }
+      if (data.student) {
+        const current = localDb.getStudents();
+        const idx = current.findIndex((s) => s.id === id || s.studentId === id);
+        if (idx >= 0) current[idx] = data.student;
+        localStorage.setItem('amani_students', JSON.stringify(current));
+        syncService.notifyDataChange();
+      }
+      return data;
+    } catch (err: any) {
+      const isNetworkError =
+        err.name === 'TypeError' ||
+        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
+      if (isNetworkError) {
+        const localRes = localDb.updateStudent(id, updates);
+        syncService.queueOutboxItem({
+          type: 'STUDENT',
+          action: 'UPDATE',
+          payload: { id, ...updates },
+        });
+        syncService.notifyDataChange();
+        return localRes;
+      }
+      throw err;
+    }
   },
 
   async deleteStudent(id: string, teacherId?: string) {
     const url = teacherId
       ? `/api/students/${encodeURIComponent(id)}?teacherId=${encodeURIComponent(teacherId)}`
       : `/api/students/${encodeURIComponent(id)}`;
-    return callApiWithFallback(
-      url,
-      { method: 'DELETE' },
-      () => localDb.deleteStudent(id)
-    );
+
+    try {
+      const res = await fetch(url, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || 'Failed to remove student');
+      }
+      const current = localDb.getStudents();
+      const updated = current.filter((s) => s.id !== id && s.studentId !== id);
+      localStorage.setItem('amani_students', JSON.stringify(updated));
+      syncService.notifyDataChange();
+      return data;
+    } catch (err: any) {
+      const isNetworkError =
+        err.name === 'TypeError' ||
+        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
+      if (isNetworkError) {
+        const localRes = localDb.deleteStudent(id);
+        syncService.queueOutboxItem({
+          type: 'STUDENT',
+          action: 'DELETE',
+          payload: { id, teacherId },
+        });
+        syncService.notifyDataChange();
+        return localRes;
+      }
+      throw err;
+    }
   },
 
   // Teacher Student Roster Linking
@@ -434,15 +531,43 @@ export const api = {
   },
 
   async recordAttendance(payload: Partial<AttendanceSession>) {
-    return callApiWithFallback(
-      '/api/attendance',
-      {
+    try {
+      const res = await fetch('/api/attendance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      },
-      () => localDb.recordAttendance(payload)
-    );
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || 'Failed to record attendance');
+      }
+      if (data.session) {
+        const current = localDb.getAttendance();
+        const idx = current.findIndex((s) => s.id === data.session.id);
+        if (idx >= 0) current[idx] = data.session;
+        else current.unshift(data.session);
+        localStorage.setItem('amani_attendance', JSON.stringify(current));
+        syncService.notifyDataChange();
+      }
+      return data;
+    } catch (err: any) {
+      const isNetworkError =
+        err.name === 'TypeError' ||
+        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
+      if (isNetworkError) {
+        const localRes = localDb.recordAttendance(payload);
+        if (localRes.session) {
+          syncService.queueOutboxItem({
+            type: 'ATTENDANCE',
+            action: 'CREATE',
+            payload: localRes.session,
+          });
+          syncService.notifyDataChange();
+        }
+        return localRes;
+      }
+      throw err;
+    }
   },
 
   // Academic Marks & Grading Lifecycle
@@ -492,15 +617,49 @@ export const api = {
       recommendedAction?: string;
     }>;
   }) {
-    return callApiWithFallback(
-      '/api/marks/batch',
-      {
+    try {
+      const res = await fetch('/api/marks/batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      },
-      () => localDb.saveBatchMarks(payload)
-    );
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || 'Failed to submit marks to central database');
+      }
+      if (data.results && Array.isArray(data.results)) {
+        const current = localDb.getMarks();
+        for (const item of data.results) {
+          const idx = current.findIndex((m) => m.id === item.id);
+          if (idx >= 0) current[idx] = item;
+          else current.push(item);
+        }
+        localStorage.setItem('amani_marks', JSON.stringify(current));
+        syncService.notifyDataChange();
+      }
+      return data;
+    } catch (err: any) {
+      const isNetworkError =
+        err.name === 'TypeError' ||
+        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
+      if (isNetworkError) {
+        const localRes = localDb.saveBatchMarks(payload);
+        const marks = localDb.getMarks({
+          classId: payload.classId,
+          subjectId: payload.subjectId,
+        });
+        if (marks && marks.length > 0) {
+          syncService.queueOutboxItem({
+            type: 'MARK',
+            action: 'CREATE',
+            payload: marks,
+          });
+          syncService.notifyDataChange();
+        }
+        return localRes;
+      }
+      throw err;
+    }
   },
 
   async approveMark(id: string, reviewedBy?: string) {
@@ -680,38 +839,111 @@ export const api = {
   },
 
   async createAssignment(payload: Partial<Assignment>) {
-    return callApiWithFallback(
-      '/api/assignments',
-      {
+    try {
+      const res = await fetch('/api/assignments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      },
-      () => localDb.createAssignment(payload)
-    );
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || 'Failed to create assignment');
+      }
+      if (data.assignment) {
+        const current = localDb.getAssignments();
+        const idx = current.findIndex((a) => a.id === data.assignment.id);
+        if (idx >= 0) current[idx] = data.assignment;
+        else current.unshift(data.assignment);
+        localStorage.setItem('amani_assignments', JSON.stringify(current));
+        syncService.notifyDataChange();
+      }
+      return data;
+    } catch (err: any) {
+      const isNetworkError =
+        err.name === 'TypeError' ||
+        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
+      if (isNetworkError) {
+        const localRes = localDb.createAssignment(payload);
+        if (localRes.assignment) {
+          syncService.queueOutboxItem({
+            type: 'ASSIGNMENT',
+            action: 'CREATE',
+            payload: localRes.assignment,
+          });
+          syncService.notifyDataChange();
+        }
+        return localRes;
+      }
+      throw err;
+    }
   },
 
   async updateAssignment(id: string, payload: Partial<Assignment>) {
-    return callApiWithFallback(
-      `/api/assignments/${id}`,
-      {
+    try {
+      const res = await fetch(`/api/assignments/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      },
-      () => localDb.updateAssignment(id, payload)
-    );
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || 'Failed to update assignment');
+      }
+      if (data.assignment) {
+        const current = localDb.getAssignments();
+        const idx = current.findIndex((a) => a.id === id);
+        if (idx >= 0) current[idx] = data.assignment;
+        localStorage.setItem('amani_assignments', JSON.stringify(current));
+        syncService.notifyDataChange();
+      }
+      return data;
+    } catch (err: any) {
+      const isNetworkError =
+        err.name === 'TypeError' ||
+        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
+      if (isNetworkError) {
+        const localRes = localDb.updateAssignment(id, payload);
+        syncService.queueOutboxItem({
+          type: 'ASSIGNMENT',
+          action: 'UPDATE',
+          payload: { id, ...payload },
+        });
+        syncService.notifyDataChange();
+        return localRes;
+      }
+      throw err;
+    }
   },
 
   async deleteAssignment(id: string, teacherId?: string) {
     const url = teacherId ? `/api/assignments/${id}?teacherId=${encodeURIComponent(teacherId)}` : `/api/assignments/${id}`;
-    return callApiWithFallback(
-      url,
-      {
-        method: 'DELETE',
-      },
-      () => localDb.deleteAssignment(id, teacherId)
-    );
+    try {
+      const res = await fetch(url, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || 'Failed to delete assignment');
+      }
+      const current = localDb.getAssignments();
+      const updated = current.filter((a) => a.id !== id);
+      localStorage.setItem('amani_assignments', JSON.stringify(updated));
+      syncService.notifyDataChange();
+      return data;
+    } catch (err: any) {
+      const isNetworkError =
+        err.name === 'TypeError' ||
+        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
+      if (isNetworkError) {
+        const localRes = localDb.deleteAssignment(id, teacherId);
+        syncService.queueOutboxItem({
+          type: 'ASSIGNMENT',
+          action: 'DELETE',
+          payload: { id, teacherId },
+        });
+        syncService.notifyDataChange();
+        return localRes;
+      }
+      throw err;
+    }
   },
 
   // Fee Structures

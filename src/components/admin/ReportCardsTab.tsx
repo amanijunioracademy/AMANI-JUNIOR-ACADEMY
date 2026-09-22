@@ -366,10 +366,15 @@ const ReportCardSheet: React.FC<{
       <div className="text-center space-y-1.5 pb-3 border-b-2 border-slate-300">
         <div className="flex justify-center mb-1">
           <img
-            src="/amani_logo.jpg"
+            src="/amani_logo.svg"
             alt="Amani Junior Academy Official School Logo"
-            className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-amber-500 p-0.5 shadow-sm"
+            className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full border-2 border-amber-500 p-0.5 shadow-sm bg-white"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              const target = e.currentTarget;
+              target.onerror = null;
+              target.src = '/amani_logo.jpg';
+            }}
           />
         </div>
         <h1 className="text-xl sm:text-2xl font-extrabold font-['Cinzel',serif] text-[#0F1E36] tracking-wide">

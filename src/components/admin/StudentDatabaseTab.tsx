@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Student, SchoolClass } from '../../types';
 import { api } from '../../services/api';
+import { useCentralSync } from '../../hooks/useCentralSync';
+import { CentralSyncBadge } from '../common/CentralSyncBadge';
 import {
   Users,
   Search,
@@ -68,6 +70,9 @@ export const StudentDatabaseTab: React.FC<Props> = ({ classes }) => {
       setIsLoading(false);
     }
   };
+
+  // Automatic real-time cross-device sync
+  useCentralSync(fetchStudents);
 
   useEffect(() => {
     fetchStudents();
@@ -215,13 +220,16 @@ export const StudentDatabaseTab: React.FC<Props> = ({ classes }) => {
           </p>
         </div>
 
-        <button
-          onClick={handleOpenAddModal}
-          className="px-4 py-2.5 bg-[#0F1E36] hover:bg-amber-600 text-white font-bold text-xs rounded-xl transition flex items-center gap-2 shadow-sm self-start sm:self-auto shrink-0"
-        >
-          <UserPlus className="w-4 h-4 text-amber-400" />
-          <span>Register New Student</span>
-        </button>
+        <div className="flex items-center gap-3 self-start sm:self-auto shrink-0">
+          <CentralSyncBadge />
+          <button
+            onClick={handleOpenAddModal}
+            className="px-4 py-2.5 bg-[#0F1E36] hover:bg-amber-600 text-white font-bold text-xs rounded-xl transition flex items-center gap-2 shadow-sm"
+          >
+            <UserPlus className="w-4 h-4 text-amber-400" />
+            <span>Register New Student</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}

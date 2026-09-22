@@ -136,8 +136,8 @@ export const AskAmaniChatbot: React.FC = () => {
           {/* Header */}
           <div className="bg-gradient-to-r from-[#0F1E36] to-[#1A2E4C] text-white p-4 flex items-center justify-between border-b-2 border-amber-500 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-amber-400 bg-white/10 shrink-0">
-                <img src="/amani_logo.jpg" alt="Amani Logo" className="w-full h-full object-cover" />
+              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-amber-400 bg-white shrink-0">
+                <img src="/amani_logo.svg" alt="Amani Official Logo" className="w-full h-full object-contain" referrerPolicy="no-referrer" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/amani_logo.jpg'; }} />
               </div>
               <div>
                 <div className="font-['Cinzel',serif] text-sm font-bold tracking-wide flex items-center gap-1.5">

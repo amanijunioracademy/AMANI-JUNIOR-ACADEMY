@@ -6,6 +6,7 @@ import { AskAmaniChatbot } from './components/AskAmaniChatbot';
 import { AdmissionModal } from './components/AdmissionModal';
 import { HumanEscalationModal } from './components/HumanEscalationModal';
 import { VitaliceWhatsAppButton } from './components/VitaliceWhatsAppButton';
+import { syncService } from './services/syncService';
 
 // Pages for Amani Junior Academy and JSS
 import { HomePage } from './pages/HomePage';
@@ -27,6 +28,12 @@ import { AdminPortalPage } from './pages/AdminPortalPage';
 
 const AppContent: React.FC = () => {
   const { currentRoute, currentUser } = useApp();
+
+  // Initialize continuous central synchronization across devices
+  useEffect(() => {
+    syncService.startAutoSync(10000);
+    return () => syncService.stopAutoSync();
+  }, []);
 
   // Scroll to top upon page navigation
   useEffect(() => {

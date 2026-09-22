@@ -36,7 +36,7 @@ export const initialSchoolSettings: SchoolSettings = {
   ictTeacherName: 'VITALICE ODHIAMBO',
   email: 'amanijacademy@gmail.com',
   officeHours: 'Monday – Friday: 7:00 AM – 5:00 PM | Saturday: 8:00 AM – 1:00 PM',
-  logoUrl: '/amani_logo.jpg',
+  logoUrl: '/amani_logo.svg',
   heroImageUrl: '/amani_hero.jpg',
   ictImageUrl: '/amani_ict.jpg',
   primaryColor: '#0F1E36', // Deep Navy Blue

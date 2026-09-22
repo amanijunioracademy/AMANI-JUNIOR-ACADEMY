@@ -22,32 +22,44 @@ import { TeacherAttendanceTab } from '../components/teacher/TeacherAttendanceTab
 import { TeacherAssignmentsTab } from '../components/teacher/TeacherAssignmentsTab';
 import { TeacherStudentRegistrationTab } from '../components/teacher/TeacherStudentRegistrationTab';
 import { InfiniteCalendarModal } from '../components/common/InfiniteCalendarModal';
+import { CentralSyncBadge } from '../components/common/CentralSyncBadge';
 
 export const TeacherPortalPage: React.FC = () => {
   const { currentUser, navigate, settings, classes, subjects, logout } = useApp();
   const [activeTab, setActiveTab] = useState<'learners' | 'marks' | 'attendance' | 'assignments'>('learners');
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  // Derive teacher's assigned classes and subjects
-  const assignedClasses: string[] =
-    currentUser?.assignedClasses && currentUser.assignedClasses.length > 0
-      ? currentUser.assignedClasses
-      : (currentUser?.assignedClassIds && currentUser.assignedClassIds.length > 0
-          ? currentUser.assignedClassIds.map((cId) => {
-              const cls = classes.find((c) => c.id === cId);
-              return cls ? cls.name : cId;
-            })
-          : []);
+  // Derive teacher's assigned classes and subjects (resolving class IDs to proper names)
+  const rawAssigned = [
+    ...(currentUser?.assignedClasses || []),
+    ...(currentUser?.assignedClassIds || []),
+  ];
+  const assignedClasses: string[] = Array.from(
+    new Set(
+      rawAssigned
+        .map((item) => {
+          if (!item) return '';
+          const found = classes.find(
+            (c) => c.id.toLowerCase() === item.toLowerCase() || c.name.toLowerCase() === item.toLowerCase()
+          );
+          return found ? found.name : item;
+        })
+        .filter(Boolean)
+    )
+  );
 
-  const assignedSubjects: string[] =
-    currentUser?.assignedSubjects && currentUser.assignedSubjects.length > 0
-      ? currentUser.assignedSubjects
-      : (currentUser?.assignedSubjectIds && currentUser.assignedSubjectIds.length > 0
-          ? currentUser.assignedSubjectIds.map((sId) => {
-              const sub = subjects.find((s) => s.id === sId);
-              return sub ? sub.name : sId;
-            })
-          : []);
+  const assignedSubjects: string[] = Array.from(
+    new Set(
+      currentUser?.assignedSubjects && currentUser.assignedSubjects.length > 0
+        ? currentUser.assignedSubjects
+        : (currentUser?.assignedSubjectIds && currentUser.assignedSubjectIds.length > 0
+            ? currentUser.assignedSubjectIds.map((sId) => {
+                const sub = subjects.find((s) => s.id === sId);
+                return sub ? sub.name : sId;
+              })
+            : [])
+    )
+  );
 
   // Class Selection State:
   // If only 1 assigned class, automatically take teacher directly to that class.
@@ -128,6 +140,7 @@ export const TeacherPortalPage: React.FC = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 relative z-10 shrink-0">
+          <CentralSyncBadge />
           <button
             type="button"
             onClick={() => setIsCalendarOpen(true)}

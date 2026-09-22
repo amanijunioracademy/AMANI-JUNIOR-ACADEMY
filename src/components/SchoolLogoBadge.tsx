@@ -47,16 +47,16 @@ export const SchoolLogoBadge: React.FC<SchoolLogoBadgeProps> = ({
       {/* Official School Crest Logo */}
       <div className="relative shrink-0 group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-emerald-600 rounded-full blur-[2px] opacity-70 group-hover:opacity-100 transition duration-300" />
-        <div className={`relative ${sizeMap[size]} rounded-full overflow-hidden border-2 border-amber-400/90 shadow-md bg-[#0F1E36] flex items-center justify-center`}>
+        <div className={`relative ${sizeMap[size]} rounded-full overflow-hidden border-2 border-amber-400/90 shadow-md bg-white flex items-center justify-center`}>
           <img
-            src="/amani_logo.jpg"
+            src="/amani_logo.svg"
             alt="AMANI JUNIOR ACADEMY AND JSS - Strive to Achieve"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-contain object-center"
+            referrerPolicy="no-referrer"
             onError={(e) => {
-              // Fallback if image path has issue
               const target = e.currentTarget;
               target.onerror = null;
-              target.src = '/amani_hero.jpg';
+              target.src = '/amani_logo.jpg';
             }}
           />
         </div>

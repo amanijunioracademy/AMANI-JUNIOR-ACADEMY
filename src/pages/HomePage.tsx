@@ -145,9 +145,15 @@ export const HomePage: React.FC = () => {
                 <div className="relative bg-gradient-to-b from-[#0F1E36] to-[#0A1424] p-8 rounded-2xl border-2 border-amber-500/60 shadow-2xl text-center space-y-5 max-w-sm">
                   <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-amber-400 shadow-xl bg-white p-1">
                     <img
-                      src="/amani_logo.jpg"
+                      src="/amani_logo.svg"
                       alt="Official Amani Logo"
-                      className="w-full h-full object-cover rounded-full"
+                      className="w-full h-full object-contain rounded-full"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.onerror = null;
+                        target.src = '/amani_logo.jpg';
+                      }}
                     />
                   </div>
 

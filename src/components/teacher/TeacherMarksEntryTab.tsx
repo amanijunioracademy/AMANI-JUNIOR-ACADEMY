@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { api } from '../../services/api';
 import { Student, AcademicResult, SchoolSettings, GradingScaleItem } from '../../types';
 import {
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { AcademicYearTermSelector } from '../common/AcademicYearTermSelector';
 import { InfiniteCalendarModal } from '../common/InfiniteCalendarModal';
+import { useCentralSync } from '../../hooks/useCentralSync';
 
 interface Props {
   teacherId: string;
@@ -40,7 +41,11 @@ export const TeacherMarksEntryTab: React.FC<Props> = ({
   const [selectedClass, setSelectedClass] = useState(
     selectedClassProp || assignedClasses[0] || 'Grade 7A (JSS)'
   );
-  const [selectedSubject, setSelectedSubject] = useState(assignedSubjects[0] || 'Mathematics');
+  const uniqueAssignedSubjects = useMemo(() => {
+    return Array.from(new Set(assignedSubjects || []));
+  }, [assignedSubjects]);
+
+  const [selectedSubject, setSelectedSubject] = useState(uniqueAssignedSubjects[0] || 'Mathematics');
   const [assessmentType, setAssessmentType] = useState('CAT 1');
   const [term, setTerm] = useState(settings?.currentTerm || `Term 1, ${settings?.academicYear || '2026'}`);
   const [academicYear, setAcademicYear] = useState(settings?.academicYear || '2026');
@@ -66,10 +71,10 @@ export const TeacherMarksEntryTab: React.FC<Props> = ({
   }, [assignedClasses]);
 
   useEffect(() => {
-    if (assignedSubjects.length > 0 && !assignedSubjects.includes(selectedSubject)) {
-      setSelectedSubject(assignedSubjects[0]);
+    if (uniqueAssignedSubjects.length > 0 && !uniqueAssignedSubjects.includes(selectedSubject)) {
+      setSelectedSubject(uniqueAssignedSubjects[0]);
     }
-  }, [assignedSubjects]);
+  }, [uniqueAssignedSubjects]);
 
   // Current working inputs mapped by studentId
   const [entries, setEntries] = useState<
@@ -115,6 +120,9 @@ export const TeacherMarksEntryTab: React.FC<Props> = ({
     }
     return 'E';
   };
+
+  // Real-time synchronization
+  useCentralSync(loadRosterAndMarks);
 
   const loadRosterAndMarks = async () => {
     if (assignedClasses.length === 0) {
@@ -388,7 +396,7 @@ export const TeacherMarksEntryTab: React.FC<Props> = ({
             onChange={(e) => setSelectedSubject(e.target.value)}
             className="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 bg-white text-slate-800 font-semibold"
           >
-            {assignedSubjects.map((s) => (
+            {uniqueAssignedSubjects.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>

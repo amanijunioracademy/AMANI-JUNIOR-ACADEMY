@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import { Student } from '../../types';
 import { Calendar, CheckCircle2, Clock, Users, Save, AlertCircle } from 'lucide-react';
+import { useCentralSync } from '../../hooks/useCentralSync';
 
 interface Props {
   teacherId: string;
@@ -41,6 +42,9 @@ export const TeacherAttendanceTab: React.FC<Props> = ({
       setSelectedClass(assignedClasses[0]);
     }
   }, [assignedClasses]);
+
+  // Real-time synchronization
+  useCentralSync(fetchClassRoster);
 
   const fetchClassRoster = async () => {
     if (assignedClasses.length === 0) {

@@ -240,11 +240,18 @@ function loadDatabase(): SchoolDatabaseState {
           }
         }
 
-        // Ensure all 29 Grade 5 students from official KNEC register are persistently synchronized in database
+        // Ensure all canonical initial students (KNEC Grade 5 and junior secondary / primary learners) exist in the database without wiping out newly registered learners
         let loadedStudents = Array.isArray(parsed.students) ? [...parsed.students] : [];
-        // Replace or update any existing Grade 5 records with official KNEC register
-        loadedStudents = loadedStudents.filter((s: any) => !s.class?.toLowerCase().includes('grade 5') && !s.grade?.toLowerCase().includes('grade 5'));
-        loadedStudents.push(...grade5Students);
+        for (const initStudent of initialStudents) {
+          const exists = loadedStudents.some(
+            (s: any) =>
+              s.studentId === initStudent.studentId ||
+              (s.admissionNumber && initStudent.admissionNumber && s.admissionNumber.toUpperCase() === initStudent.admissionNumber.toUpperCase())
+          );
+          if (!exists) {
+            loadedStudents.push(initStudent);
+          }
+        }
 
         // Ensure official fee structures are always present and up-to-date
         const loadedFeeStructures = Array.isArray(parsed.feeStructures) && parsed.feeStructures.length > 0
@@ -297,12 +304,90 @@ function loadDatabase(): SchoolDatabaseState {
   return defaultState;
 }
 
+let dbLastModified: string = new Date().toISOString();
+
 function saveDatabase(state: SchoolDatabaseState) {
   try {
+    dbLastModified = new Date().toISOString();
     fs.writeFileSync(DB_FILE, JSON.stringify(state, null, 2), 'utf-8');
   } catch (err) {
     console.error('Error writing database file:', err);
   }
+}
+
+// Authorization Helper: get all class matching tokens for a teacher
+function getTeacherAllowedClasses(teacherId: string | undefined): { isUnrestricted: boolean; allowedTokens: string[] } {
+  if (!teacherId) return { isUnrestricted: true, allowedTokens: [] };
+  const tId = String(teacherId).trim();
+
+  // Find user and teacher
+  const teacher = db?.teachers?.find(
+    (t) => t.id === tId || t.userId === tId || (t.staffId && t.staffId.toLowerCase() === tId.toLowerCase())
+  );
+  const user = db?.users?.find(
+    (u) => u.id === tId || (teacher && u.id === teacher.userId) || (u.staffId && u.staffId.toLowerCase() === tId.toLowerCase())
+  );
+
+  // Admin roles are always unrestricted across all classes
+  if (
+    user &&
+    (user.role === 'CHIEF_ADMIN' ||
+      user.role === 'DIRECTOR' ||
+      user.role === 'HEADTEACHER' ||
+      user.role === 'DEPUTY_HEADTEACHER' ||
+      user.role === 'ICT_ADMIN')
+  ) {
+    return { isUnrestricted: true, allowedTokens: [] };
+  }
+
+  // If neither teacher nor user exists, or user is not a restricted teacher
+  if (!teacher && (!user || user.role !== 'TEACHER')) {
+    return { isUnrestricted: true, allowedTokens: [] };
+  }
+
+  const rawClasses: string[] = [
+    ...(teacher?.assignedClasses || []),
+    ...(user?.assignedClasses || []),
+    ...(user?.assignedClassIds || []),
+  ];
+
+  if (rawClasses.length === 0) {
+    // Teacher with no specific class restriction is unrestricted
+    return { isUnrestricted: true, allowedTokens: [] };
+  }
+
+  const tokens = new Set<string>();
+  for (const c of rawClasses) {
+    if (!c) continue;
+    const clean = c.trim().toLowerCase();
+    tokens.add(clean);
+    // Find in db.classes
+    const matched = db?.classes?.find(
+      (cls) => cls.id.toLowerCase() === clean || cls.name.toLowerCase() === clean
+    );
+    if (matched) {
+      tokens.add(matched.id.toLowerCase());
+      tokens.add(matched.name.toLowerCase());
+      if (matched.grade) tokens.add(matched.grade.toLowerCase());
+    }
+    const gradeMatch = clean.match(/grade\s*\d+/i);
+    if (gradeMatch) {
+      tokens.add(gradeMatch[0].toLowerCase());
+    }
+  }
+
+  return { isUnrestricted: false, allowedTokens: Array.from(tokens) };
+}
+
+function isTeacherAuthorizedForClass(teacherId: string | undefined, classNameOrId: string | undefined): boolean {
+  if (!teacherId || !classNameOrId) return true;
+  const { isUnrestricted, allowedTokens } = getTeacherAllowedClasses(teacherId);
+  if (isUnrestricted) return true;
+
+  const target = classNameOrId.trim().toLowerCase();
+  return allowedTokens.some(
+    (token) => target === token || target.includes(token) || token.includes(target)
+  );
 }
 
 db = loadDatabase();
@@ -928,27 +1013,17 @@ app.get('/api/students', (req: Request, res: Response) => {
   const { class: className, grade, search, teacherId } = req.query;
   let results = [...db.students];
 
-  // Backend Permission Enforcement: Filter by teacher's assigned classes
+  // Backend Permission Enforcement: Filter by teacher's assigned classes if restricted
   if (teacherId) {
-    const tId = String(teacherId);
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    if (teacher || (user && user.role === 'TEACHER')) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowedClasses = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowedClasses.length > 0) {
-        results = results.filter((s) =>
-          allowedClasses.some(
-            (c: string) =>
-              s.class.trim().toLowerCase() === c ||
-              s.class.toLowerCase().includes(c) ||
-              c.includes(s.class.toLowerCase())
-          )
+    const { isUnrestricted, allowedTokens } = getTeacherAllowedClasses(String(teacherId));
+    if (!isUnrestricted && allowedTokens.length > 0) {
+      results = results.filter((s) => {
+        const sCls = (s.class || '').trim().toLowerCase();
+        const sGrd = (s.grade || '').trim().toLowerCase();
+        return allowedTokens.some(
+          (t) => sCls === t || sCls.includes(t) || t.includes(sCls) || sGrd === t || sGrd.includes(t) || t.includes(sGrd)
         );
-      } else {
-        // Teacher has no assigned classes yet
-        results = [];
-      }
+      });
     }
   }
 
@@ -978,6 +1053,191 @@ app.get('/api/students', (req: Request, res: Response) => {
   }
 
   res.json(results);
+});
+
+// Central Multi-Device Synchronization Endpoints
+app.get('/api/sync/status', (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    serverTimestamp: new Date().toISOString(),
+    lastModified: dbLastModified,
+    stats: {
+      studentsCount: db.students.length,
+      marksCount: db.marks.length,
+      attendanceCount: db.attendance.length,
+      assignmentsCount: (db.assignments || []).length,
+    },
+  });
+});
+
+app.get('/api/sync/pull', (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    serverTimestamp: new Date().toISOString(),
+    lastModified: dbLastModified,
+    students: db.students,
+    marks: db.marks,
+    attendance: db.attendance,
+    assignments: db.assignments || [],
+  });
+});
+
+app.post('/api/sync', (req: Request, res: Response) => {
+  const { students, marks, attendance, assignments } = req.body;
+  let studentsSynced = 0;
+  let marksSynced = 0;
+  let attendanceSynced = 0;
+  let assignmentsSynced = 0;
+
+  if (Array.isArray(students)) {
+    students.forEach((incoming: any) => {
+      if (!incoming || !incoming.fullName || !incoming.admissionNumber) return;
+      const cleanAdm = incoming.admissionNumber.trim().toUpperCase();
+      const existingIdx = db.students.findIndex(
+        (s) =>
+          s.admissionNumber.toUpperCase() === cleanAdm ||
+          (incoming.id && s.id === incoming.id) ||
+          (incoming.studentId && s.studentId === incoming.studentId)
+      );
+
+      if (existingIdx >= 0) {
+        db.students[existingIdx] = {
+          ...db.students[existingIdx],
+          ...incoming,
+          admissionNumber: cleanAdm,
+          updatedAt: new Date().toISOString(),
+        };
+        studentsSynced++;
+      } else {
+        let sid = incoming.studentId;
+        if (!sid) {
+          const maxNum = db.students.reduce((max, s) => {
+            const match = s.studentId?.match(/STU-(\d+)/);
+            if (match) {
+              const n = parseInt(match[1], 10);
+              return n > max ? n : max;
+            }
+            return max;
+          }, 25);
+          sid = `STU-${String(maxNum + 1).padStart(5, '0')}`;
+        }
+        const newStu: Student = {
+          id: incoming.id || `stu-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          studentId: sid,
+          admissionNumber: cleanAdm,
+          fullName: incoming.fullName.trim(),
+          class: incoming.class || 'Grade 7A (JSS)',
+          grade: incoming.grade || (incoming.class ? incoming.class.split(' ')[0] : 'Grade 7'),
+          academicYear: incoming.academicYear || '2026',
+          status: incoming.status || 'ACTIVE',
+          gender: incoming.gender || 'M',
+          dateOfBirth: incoming.dateOfBirth || '2012-05-15',
+          guardianName: incoming.guardianName || '',
+          guardianPhone: incoming.guardianPhone || '',
+          guardianEmail: incoming.guardianEmail || '',
+          specialNeeds: incoming.specialNeeds || '',
+          registeredByTeacherId: incoming.registeredByTeacherId,
+          registeredBy: incoming.registeredBy,
+          createdAt: incoming.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        db.students.push(newStu);
+        studentsSynced++;
+      }
+    });
+  }
+
+  if (Array.isArray(marks)) {
+    marks.forEach((entry: any) => {
+      if (!entry || !entry.studentId || !entry.subjectId) return;
+      const idx = db.marks.findIndex(
+        (m) =>
+          m.id === entry.id ||
+          (m.studentId === entry.studentId &&
+            m.subjectId === entry.subjectId &&
+            m.term === entry.term &&
+            m.assessmentType === entry.assessmentType)
+      );
+      if (idx >= 0) {
+        db.marks[idx] = { ...db.marks[idx], ...entry };
+        marksSynced++;
+      } else {
+        db.marks.push({
+          id: entry.id || `mrk-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          ...entry,
+          createdAt: entry.createdAt || new Date().toISOString(),
+        });
+        marksSynced++;
+      }
+    });
+  }
+
+  if (Array.isArray(attendance)) {
+    attendance.forEach((session: any) => {
+      if (!session || !session.classId || !session.date) return;
+      const idx = db.attendance.findIndex(
+        (s) => s.id === session.id || (s.classId === session.classId && s.date === session.date && s.subjectId === session.subjectId)
+      );
+      if (idx >= 0) {
+        db.attendance[idx] = { ...db.attendance[idx], ...session };
+        attendanceSynced++;
+      } else {
+        db.attendance.push({
+          id: session.id || `att-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          ...session,
+          createdAt: session.createdAt || new Date().toISOString(),
+        });
+        attendanceSynced++;
+      }
+    });
+  }
+
+  if (Array.isArray(assignments)) {
+    if (!db.assignments) db.assignments = [];
+    assignments.forEach((assignment: any) => {
+      if (!assignment || !assignment.title) return;
+      const idx = db.assignments.findIndex((a) => a.id === assignment.id);
+      if (idx >= 0) {
+        db.assignments[idx] = { ...db.assignments[idx], ...assignment };
+        assignmentsSynced++;
+      } else {
+        db.assignments.push({
+          id: assignment.id || `as-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          ...assignment,
+          createdAt: assignment.createdAt || new Date().toISOString().split('T')[0],
+        });
+        assignmentsSynced++;
+      }
+    });
+  }
+
+  if (studentsSynced > 0 || marksSynced > 0 || attendanceSynced > 0 || assignmentsSynced > 0) {
+    saveDatabase(db);
+    addAuditLog(
+      'System Sync',
+      'CHIEF_ADMIN',
+      'Cross-Device Synchronization',
+      `Central database synchronized across devices: ${studentsSynced} learners, ${marksSynced} marks, ${attendanceSynced} attendance records, ${assignmentsSynced} assignments.`
+    );
+  }
+
+  res.json({
+    success: true,
+    serverTimestamp: new Date().toISOString(),
+    lastModified: dbLastModified,
+    synced: {
+      students: studentsSynced,
+      marks: marksSynced,
+      attendance: attendanceSynced,
+      assignments: assignmentsSynced,
+    },
+    totals: {
+      studentsCount: db.students.length,
+      marksCount: db.marks.length,
+      attendanceCount: db.attendance.length,
+      assignmentsCount: (db.assignments || []).length,
+    },
+  });
 });
 
 // Detailed Student Profile with all linked academic records
@@ -1051,23 +1311,10 @@ app.post('/api/students', (req: Request, res: Response) => {
 
   // Backend Permission Enforcement: Verify teacher is authorized for this class
   const teacherId = req.body.registeredByTeacherId || req.body.teacherId || req.headers['x-teacher-id'];
-  if (teacherId) {
-    const tId = String(teacherId);
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    if (user?.role === 'TEACHER' || (teacher && user?.role !== 'CHIEF_ADMIN')) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowed.length > 0) {
-        const target = className.trim().toLowerCase();
-        const hasAccess = allowed.some((c: string) => c === target || target.includes(c) || c.includes(target));
-        if (!hasAccess) {
-          return res.status(403).json({
-            error: `Access Denied: Teacher is not authorized to register students into "${className}".`,
-          });
-        }
-      }
-    }
+  if (teacherId && !isTeacherAuthorizedForClass(String(teacherId), className)) {
+    return res.status(403).json({
+      error: `Access Denied: Teacher is not authorized to register students into "${className}".`,
+    });
   }
 
   const cleanName = fullName.trim();
@@ -1098,7 +1345,7 @@ app.post('/api/students', (req: Request, res: Response) => {
 
   // Generate next sequential unique Student ID (STU-00026...)
   const maxNum = db.students.reduce((max, s) => {
-    const match = s.studentId.match(/STU-(\d+)/);
+    const match = s.studentId?.match(/STU-(\d+)/);
     if (match) {
       const n = parseInt(match[1], 10);
       return n > max ? n : max;
@@ -1110,8 +1357,8 @@ app.post('/api/students', (req: Request, res: Response) => {
   const generatedStudentId = `STU-${nextIdNum}`;
 
   const newStudent: Student = {
-    id: `stu-${Date.now()}`,
-    studentId: generatedStudentId,
+    id: req.body.id || `stu-${Date.now()}`,
+    studentId: req.body.studentId || generatedStudentId,
     admissionNumber: cleanAdm,
     fullName: cleanName,
     class: className,
@@ -1123,15 +1370,19 @@ app.post('/api/students', (req: Request, res: Response) => {
     guardianName,
     guardianPhone,
     guardianEmail,
-    createdAt: new Date().toISOString(),
+    specialNeeds: req.body.specialNeeds || '',
+    registeredByTeacherId: req.body.registeredByTeacherId,
+    registeredBy: req.body.registeredBy,
+    createdAt: req.body.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   db.students.push(newStudent);
   saveDatabase(db);
 
   addAuditLog(
-    'Chief Administrator',
-    'CHIEF_ADMIN',
+    req.body.registeredBy || 'Faculty Member',
+    'TEACHER',
     'Registered New Student',
     `Added ${newStudent.fullName} to ${newStudent.class} with unique ID ${newStudent.studentId}.`
   );
@@ -1139,7 +1390,7 @@ app.post('/api/students', (req: Request, res: Response) => {
   res.status(201).json({ success: true, student: newStudent });
 });
 
-// Update Student Record (Chief Admin Only)
+// Update Student Record
 app.put('/api/students/:id', (req: Request, res: Response) => {
   const student = db.students.find((s) => s.id === req.params.id || s.studentId === req.params.id);
   if (!student) {
@@ -1149,28 +1400,17 @@ app.put('/api/students/:id', (req: Request, res: Response) => {
   // Backend Permission Enforcement for Teachers
   const teacherId = req.body.registeredByTeacherId || req.body.teacherId || req.headers['x-teacher-id'];
   if (teacherId) {
-    const tId = String(teacherId);
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    if (user?.role === 'TEACHER' || (teacher && user?.role !== 'CHIEF_ADMIN')) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowed.length > 0) {
-        const currentClass = (student.class || '').trim().toLowerCase();
-        const newClass = (req.body.class || student.class || '').trim().toLowerCase();
-        const hasCurrent = allowed.some((c: string) => c === currentClass || currentClass.includes(c) || c.includes(currentClass));
-        const hasNew = allowed.some((c: string) => c === newClass || newClass.includes(c) || c.includes(newClass));
-        if (!hasCurrent || !hasNew) {
-          return res.status(403).json({
-            error: `Access Denied: Teacher is not authorized to modify students in unassigned classes.`,
-          });
-        }
-      }
+    const currentClass = student.class || '';
+    const newClass = req.body.class || student.class || '';
+    if (!isTeacherAuthorizedForClass(String(teacherId), currentClass) || !isTeacherAuthorizedForClass(String(teacherId), newClass)) {
+      return res.status(403).json({
+        error: `Access Denied: Teacher is not authorized to modify students in unassigned classes.`,
+      });
     }
   }
 
   const updates = req.body;
-  Object.assign(student, updates);
+  Object.assign(student, updates, { updatedAt: new Date().toISOString() });
   saveDatabase(db);
 
   addAuditLog(
@@ -1196,23 +1436,10 @@ app.delete('/api/students/:id', (req: Request, res: Response) => {
 
   const targetStudent = db.students[index];
   const teacherId = req.query.teacherId || req.body?.teacherId || req.headers['x-teacher-id'];
-  if (teacherId) {
-    const tId = String(teacherId);
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    if (user?.role === 'TEACHER' || (teacher && user?.role !== 'CHIEF_ADMIN')) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowed.length > 0) {
-        const studentClass = (targetStudent.class || '').trim().toLowerCase();
-        const hasAccess = allowed.some((c: string) => c === studentClass || studentClass.includes(c) || c.includes(studentClass));
-        if (!hasAccess) {
-          return res.status(403).json({
-            error: `Access Denied: Teacher is not authorized to remove students from unassigned class "${targetStudent.class}".`,
-          });
-        }
-      }
-    }
+  if (teacherId && !isTeacherAuthorizedForClass(String(teacherId), targetStudent.class)) {
+    return res.status(403).json({
+      error: `Access Denied: Teacher is not authorized to remove students from unassigned class "${targetStudent.class}".`,
+    });
   }
 
   const [removedStudent] = db.students.splice(index, 1);
@@ -1653,23 +1880,10 @@ app.post('/api/attendance', (req: Request, res: Response) => {
   }
 
   // Backend Permission Enforcement: Verify teacher is assigned to this class
-  if (teacherId) {
-    const tId = String(teacherId);
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    if (teacher || (user && user.role === 'TEACHER')) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowed.length > 0) {
-        const targetClass = (className || classId).trim().toLowerCase();
-        const hasAccess = allowed.some((c: string) => c === targetClass || targetClass.includes(c) || c.includes(targetClass));
-        if (!hasAccess) {
-          return res.status(403).json({
-            error: `Access Denied: Teacher is not authorized to submit attendance for "${className || classId}".`,
-          });
-        }
-      }
-    }
+  if (teacherId && !isTeacherAuthorizedForClass(String(teacherId), className || classId)) {
+    return res.status(403).json({
+      error: `Access Denied: Teacher is not authorized to submit attendance for "${className || classId}".`,
+    });
   }
 
   // Check if session for this class and date exists
@@ -1714,46 +1928,22 @@ app.get('/api/marks', (req: Request, res: Response) => {
   const { classId, subjectId, academicYear, term, assessmentType, teacherId, status, studentId } = req.query;
 
   // Backend Security: Enforce class-level authorization for teachers
-  if (teacherId) {
-    const tId = String(teacherId);
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    if (user?.role === 'TEACHER' || (teacher && user?.role !== 'CHIEF_ADMIN')) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowed.length > 0) {
-        if (classId) {
-          const target = String(classId).trim().toLowerCase();
-          const hasAccess = allowed.some((c: string) => c === target || target.includes(c) || c.includes(target));
-          if (!hasAccess) {
-            return res.status(403).json({
-              error: `Access Denied: Teacher is not authorized to view or manage marks for "${classId}".`,
-            });
-          }
-        }
-      }
-    }
+  if (teacherId && classId && !isTeacherAuthorizedForClass(String(teacherId), String(classId))) {
+    return res.status(403).json({
+      error: `Access Denied: Teacher is not authorized to view or manage marks for "${classId}".`,
+    });
   }
 
   let results = [...db.marks];
 
   // If teacher queries all marks without specific classId, restrict to their assigned classes
   if (teacherId && !classId) {
-    const tId = String(teacherId);
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    if (user?.role === 'TEACHER' || (teacher && user?.role !== 'CHIEF_ADMIN')) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowed.length > 0) {
-        results = results.filter((m) =>
-          allowed.some(
-            (c: string) =>
-              (m.className && (m.className.toLowerCase() === c || m.className.toLowerCase().includes(c) || c.includes(m.className.toLowerCase()))) ||
-              (m.classId && (m.classId.toLowerCase() === c || m.classId.toLowerCase().includes(c) || c.includes(m.classId.toLowerCase())))
-          )
-        );
-      }
+    const { isUnrestricted, allowedTokens } = getTeacherAllowedClasses(String(teacherId));
+    if (!isUnrestricted && allowedTokens.length > 0) {
+      results = results.filter((m) => {
+        const mCls = (m.className || m.classId || '').trim().toLowerCase();
+        return allowedTokens.some((c) => mCls === c || mCls.includes(c) || c.includes(mCls));
+      });
     }
   }
 
@@ -1798,23 +1988,10 @@ app.post('/api/marks/batch', (req: Request, res: Response) => {
   }
 
   // Backend Permission Enforcement: Verify teacher is assigned to this class
-  if (teacherId) {
-    const tId = String(teacherId);
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    if (teacher || (user && user.role === 'TEACHER')) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowed.length > 0) {
-        const targetClass = (className || classId).trim().toLowerCase();
-        const hasAccess = allowed.some((c: string) => c === targetClass || targetClass.includes(c) || c.includes(targetClass));
-        if (!hasAccess) {
-          return res.status(403).json({
-            error: `Access Denied: Teacher is not authorized to submit marks for "${className || classId}".`,
-          });
-        }
-      }
-    }
+  if (teacherId && !isTeacherAuthorizedForClass(String(teacherId), className || classId)) {
+    return res.status(403).json({
+      error: `Access Denied: Teacher is not authorized to submit marks for "${className || classId}".`,
+    });
   }
 
   const savedMarks: AcademicResult[] = [];
@@ -2612,24 +2789,18 @@ app.get('/api/assignments', (req: Request, res: Response) => {
         user.role === 'ICT_ADMIN');
 
     // If teacher and NOT admin, strictly enforce assigned classes
-    if (!isAdmin && (teacher || (user && user.role === 'TEACHER'))) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowed.length > 0) {
-        list = list.filter(
-          (a) =>
-            allowed.some(
-              (c: string) =>
-                a.className.toLowerCase() === c ||
-                a.className.toLowerCase().includes(c) ||
-                c.includes(a.className.toLowerCase())
-            ) || a.teacherId === tId
-        );
-      } else {
-        list = [];
-      }
+    const { isUnrestricted, allowedTokens } = getTeacherAllowedClasses(tId);
+    if (!isUnrestricted && allowedTokens.length > 0) {
+      list = list.filter(
+        (a) =>
+          allowedTokens.some(
+            (c: string) =>
+              a.className.toLowerCase() === c ||
+              a.className.toLowerCase().includes(c) ||
+              c.includes(a.className.toLowerCase())
+          ) || a.teacherId === tId
+      );
     }
-    // If admin, they have global access across ALL classes
   }
 
   if (targetClass && targetClass !== 'all') {
@@ -2652,31 +2823,10 @@ app.post('/api/assignments', (req: Request, res: Response) => {
   }
 
   // Backend Permission Enforcement: If teacher and not admin, verify teacher is assigned to this class
-  if (assignmentData.teacherId) {
-    const tId = String(assignmentData.teacherId);
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    const isAdmin =
-      user &&
-      (user.role === 'CHIEF_ADMIN' ||
-        user.role === 'DIRECTOR' ||
-        user.role === 'HEADTEACHER' ||
-        user.role === 'DEPUTY_HEADTEACHER' ||
-        user.role === 'ICT_ADMIN');
-
-    if (!isAdmin && (teacher || (user && user.role === 'TEACHER'))) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      if (allowed.length > 0) {
-        const target = assignmentData.className.trim().toLowerCase();
-        const hasAccess = allowed.some((c: string) => c === target || target.includes(c) || c.includes(target));
-        if (!hasAccess) {
-          return res.status(403).json({
-            error: `Access Denied: Teacher is not authorized to create assignments for "${assignmentData.className}".`,
-          });
-        }
-      }
-    }
+  if (assignmentData.teacherId && !isTeacherAuthorizedForClass(String(assignmentData.teacherId), assignmentData.className)) {
+    return res.status(403).json({
+      error: `Access Denied: Teacher is not authorized to create assignments for "${assignmentData.className}".`,
+    });
   }
 
   const newAssignment: Assignment = {
@@ -2751,29 +2901,8 @@ app.delete('/api/assignments/:id', (req: Request, res: Response) => {
   if (teacherId) {
     const tId = String(teacherId);
     const existing = db.assignments[idx];
-    const teacher = db.teachers.find((t) => t.id === tId || t.userId === tId);
-    const user = db.users.find((u) => u.id === tId || (teacher && u.id === teacher.userId));
-    const isAdmin =
-      user &&
-      (user.role === 'CHIEF_ADMIN' ||
-        user.role === 'DIRECTOR' ||
-        user.role === 'HEADTEACHER' ||
-        user.role === 'DEPUTY_HEADTEACHER' ||
-        user.role === 'ICT_ADMIN');
-
-    if (!isAdmin && (user?.role === 'TEACHER' || (teacher && user?.role !== 'CHIEF_ADMIN'))) {
-      const rawClasses = teacher?.assignedClasses || user?.assignedClasses || user?.assignedClassIds || [];
-      const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
-      const hasAccess =
-        allowed.some(
-          (c: string) =>
-            existing.className.toLowerCase() === c ||
-            existing.className.toLowerCase().includes(c) ||
-            c.includes(existing.className.toLowerCase())
-        ) || existing.teacherId === tId;
-      if (!hasAccess) {
-        return res.status(403).json({ error: 'Access Denied: You are not authorized to delete this assignment.' });
-      }
+    if (!isTeacherAuthorizedForClass(tId, existing.className) && existing.teacherId !== tId) {
+      return res.status(403).json({ error: 'Access Denied: You are not authorized to delete this assignment.' });
     }
   }
 

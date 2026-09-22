@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Student } from '../../types';
 import { api } from '../../services/api';
+import { useCentralSync } from '../../hooks/useCentralSync';
+import { CentralSyncBadge } from '../common/CentralSyncBadge';
 import {
   UserPlus,
   Users,
@@ -72,6 +74,9 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Automatic real-time cross-device sync
+  useCentralSync(fetchStudents);
+
   const fetchStudents = async () => {
     if (assignedClasses.length === 0) {
       setStudents([]);
@@ -85,14 +90,12 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
         search: searchQuery || undefined,
         teacherId,
       });
-      data = data.filter((s) =>
-        assignedClasses.some(
-          (c) =>
-            s.class.toLowerCase() === c.toLowerCase() ||
-            s.class.toLowerCase().includes(c.toLowerCase()) ||
-            c.toLowerCase().includes(s.class.toLowerCase())
-        )
-      );
+      const allowed = assignedClasses.map((c) => c.trim().toLowerCase());
+      data = data.filter((s) => {
+        if (!s.class) return false;
+        const sc = s.class.trim().toLowerCase();
+        return allowed.some((c) => sc === c || sc.includes(c) || c.includes(sc));
+      });
       setStudents(data);
     } catch (err: any) {
       console.error('Error loading students:', err);
@@ -270,14 +273,17 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => handleOpenAddModal()}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow transition shrink-0"
-        >
-          <UserPlus className="w-4 h-4" />
-          <span>Register New Learner</span>
-        </button>
+        <div className="flex items-center gap-3 shrink-0">
+          <CentralSyncBadge />
+          <button
+            type="button"
+            onClick={() => handleOpenAddModal()}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow transition shrink-0"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>Register New Learner</span>
+          </button>
+        </div>
       </div>
 
       {/* Success Notification Banner */}

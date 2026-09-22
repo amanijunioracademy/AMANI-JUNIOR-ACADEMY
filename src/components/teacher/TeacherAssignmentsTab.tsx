@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { api } from '../../services/api';
 import { Assignment } from '../../types';
 import {
@@ -21,6 +21,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { generateAssignmentPdf, downloadAssignmentPdf } from '../../utils/pdfGenerator';
+import { useCentralSync } from '../../hooks/useCentralSync';
 
 interface Props {
   teacherId: string;
@@ -63,7 +64,11 @@ export const TeacherAssignmentsTab: React.FC<Props> = ({
   // Form State
   const [title, setTitle] = useState('');
   const [className, setClassName] = useState(selectedClassProp || assignedClasses[0] || 'Grade 7A (JSS)');
-  const [subjectName, setSubjectName] = useState(assignedSubjects[0] || 'Mathematics');
+  const uniqueAssignedSubjects = useMemo(() => {
+    return Array.from(new Set(assignedSubjects || []));
+  }, [assignedSubjects]);
+
+  const [subjectName, setSubjectName] = useState(uniqueAssignedSubjects[0] || 'Mathematics');
   const [category, setCategory] = useState('Homework Assignment');
   const [dueDate, setDueDate] = useState('2026-04-10');
   const [description, setDescription] = useState('');
@@ -80,6 +85,9 @@ export const TeacherAssignmentsTab: React.FC<Props> = ({
   const [previewAssignment, setPreviewAssignment] = useState<Assignment | null>(null);
 
   const isAdministrator = isAdmin || teacherId.includes('admin');
+
+  // Real-time synchronization
+  useCentralSync(fetchAssignments);
 
   const fetchAssignments = async () => {
     if (!isAdministrator && assignedClasses.length === 0) {
@@ -429,7 +437,7 @@ export const TeacherAssignmentsTab: React.FC<Props> = ({
                 onChange={(e) => setSubjectName(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white font-semibold text-slate-800 outline-none"
               >
-                {assignedSubjects.map((s) => (
+                {uniqueAssignedSubjects.map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>

@@ -37,6 +37,7 @@ import { SchoolSettingsTab } from '../components/admin/SchoolSettingsTab';
 import { AuditLogsTab } from '../components/admin/AuditLogsTab';
 import { FeeStructureManagementTab } from '../components/admin/FeeStructureManagementTab';
 import { TeacherAssignmentsTab } from '../components/teacher/TeacherAssignmentsTab';
+import { CentralSyncBadge } from '../components/common/CentralSyncBadge';
 
 export const AdminPortalPage: React.FC = () => {
   const { currentUser, navigate, settings, setSettings, classes, subjects, logout } = useApp();
@@ -167,6 +168,7 @@ export const AdminPortalPage: React.FC = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 relative z-10 shrink-0">
+          <CentralSyncBadge />
           <button
             type="button"
             onClick={() => setIsCalendarOpen(true)}
@@ -318,7 +320,7 @@ export const AdminPortalPage: React.FC = () => {
             teacherId={currentUser?.id || 'tch-admin'}
             teacherName={currentUser?.name || 'Chief Administrator'}
             assignedClasses={classes.map((c) => c.name)}
-            assignedSubjects={subjects.map((s) => s.name)}
+            assignedSubjects={Array.from(new Set(subjects.map((s) => s.name)))}
             isAdmin={true}
           />
         )}

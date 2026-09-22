@@ -76,6 +76,7 @@ export interface Student {
   registeredBy?: string;
   registeredByTeacherId?: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export type { FeeStructureItem, FeeTermBreakdown } from './data/feeStructuresData';
@@ -228,6 +229,7 @@ export interface StudentReportCard {
 export interface SchoolClass {
   id: string;
   name: string; // e.g. "Grade 7 Alpha (JSS)"
+  grade?: string;
   level: 'Pre-Primary' | 'Primary' | 'Junior Secondary';
   stream?: string;
   classTeacherName?: string;

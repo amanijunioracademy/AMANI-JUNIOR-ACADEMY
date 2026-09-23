@@ -43,9 +43,6 @@ export const TeacherAttendanceTab: React.FC<Props> = ({
     }
   }, [assignedClasses]);
 
-  // Real-time synchronization
-  useCentralSync(fetchClassRoster);
-
   const fetchClassRoster = async () => {
     if (assignedClasses.length === 0) {
       setStudents([]);
@@ -85,6 +82,9 @@ export const TeacherAttendanceTab: React.FC<Props> = ({
       setIsLoading(false);
     }
   };
+
+  // Real-time synchronization
+  useCentralSync(fetchClassRoster);
 
   useEffect(() => {
     if (assignedClasses.length > 0 && !assignedClasses.includes(selectedClass)) {

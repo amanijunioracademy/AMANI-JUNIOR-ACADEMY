@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1000 1000" width="1000" height="1000">
   <defs>
     <!-- Circular Text Paths -->
     <!-- Top Arc for AMANI JUNIOR ACADEMY: radius 405 around (500,500) -->
-    <path id="topTextArc" d="M 130 500 A 405 405 0 0 1 870 500" fill="none" />
+    <path id="topTextArc" d="M 130 500 A 405 405 0 0 1 870 500" fill="none" stroke="none" />
     
     <!-- Arc for AND JSS banner ribbon: radius 365 around (500,500) -->
-    <path id="andJssArc" d="M 330 290 A 365 365 0 0 1 670 290" fill="none" />
+    <path id="andJssArc" d="M 330 290 A 365 365 0 0 1 670 290" fill="none" stroke="none" />
     
     <!-- Bottom Arc for STRIVE TO ACHIEVE: radius 405 around (500,500) -->
-    <!-- Sweeps left-to-right along bottom so text is right-side up -->
-    <path id="bottomTextArc" d="M 175 745 A 405 405 0 0 0 825 745" fill="none" />
+    <path id="bottomTextArc" d="M 175 745 A 405 405 0 0 0 825 745" fill="none" stroke="none" />
 
     <!-- Color Gradients -->
     <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
@@ -41,11 +40,16 @@
   <!-- Wide White Circular Band -->
   <circle cx="500" cy="500" r="457" fill="#FFFFFF" />
 
+  <!-- Top Text Path Guide (outside defs for universal img tag compatibility) -->
+  <path id="guideTopArc" d="M 130 500 A 405 405 0 0 1 870 500" fill="none" stroke="none" />
+  <path id="guideBottomArc" d="M 175 745 A 405 405 0 0 0 825 745" fill="none" stroke="none" />
+  <path id="guideJssArc" d="M 330 290 A 365 365 0 0 1 670 290" fill="none" stroke="none" />
+
   <!-- ============================================== -->
   <!-- TOP BANNER TEXT: AMANI JUNIOR ACADEMY          -->
   <!-- ============================================== -->
-  <text fill="#162E56" font-family="'Cinzel', 'Montserrat', 'DejaVu Sans', Arial, sans-serif" font-weight="900" font-size="47" letter-spacing="4">
-    <textPath href="#topTextArc" startOffset="50%" text-anchor="middle">
+  <text fill="#162E56" font-family="'Cinzel', 'Montserrat', Arial, sans-serif" font-weight="900" font-size="47" letter-spacing="4">
+    <textPath href="#guideTopArc" xlink:href="#guideTopArc" startOffset="50%" text-anchor="middle">
       AMANI JUNIOR ACADEMY
     </textPath>
   </text>
@@ -55,8 +59,8 @@
   <path d="M 390 286 C 440 268 560 268 610 286 L 602 232 C 554 218 446 218 398 232 Z" fill="#162E56" />
   <path d="M 390 286 C 440 268 560 268 610 286" fill="none" stroke="#C59B27" stroke-width="2" />
   <path d="M 398 232 C 446 218 554 218 602 232" fill="none" stroke="#C59B27" stroke-width="2" />
-  <text fill="#FFFFFF" font-family="'Cinzel', 'Montserrat', 'DejaVu Sans', Arial, sans-serif" font-weight="900" font-size="24" letter-spacing="3.5">
-    <textPath href="#andJssArc" startOffset="50%" text-anchor="middle">
+  <text fill="#FFFFFF" font-family="'Cinzel', 'Montserrat', Arial, sans-serif" font-weight="900" font-size="24" letter-spacing="3.5">
+    <textPath href="#guideJssArc" xlink:href="#guideJssArc" startOffset="50%" text-anchor="middle">
       AND JSS
     </textPath>
   </text>
@@ -74,7 +78,6 @@
   <polygon points="880,610 795,600 795,690 865,705 840,650" fill="#162E56" />
 
   <!-- Main Bottom Curved Navy Ribbon -->
-  <!-- Spans from angle 150deg to 30deg along outer radius 460 and inner radius 335 -->
   <path d="M 102 730 A 460 460 0 0 0 898 730 L 790 668 A 335 335 0 0 1 210 668 Z" fill="#162E56" />
   
   <!-- Ribbon Golden Border Trims -->
@@ -82,8 +85,8 @@
   <path d="M 210 668 A 335 335 0 0 0 790 668" fill="none" stroke="#C59B27" stroke-width="3" />
 
   <!-- Motto Text: STRIVE TO ACHIEVE -->
-  <text fill="#FFFFFF" font-family="'Cinzel', 'Montserrat', 'DejaVu Sans', Arial, sans-serif" font-weight="900" font-size="44" letter-spacing="5">
-    <textPath href="#bottomTextArc" startOffset="50%" text-anchor="middle">
+  <text fill="#FFFFFF" font-family="'Cinzel', 'Montserrat', Arial, sans-serif" font-weight="900" font-size="44" letter-spacing="5">
+    <textPath href="#guideBottomArc" xlink:href="#guideBottomArc" startOffset="50%" text-anchor="middle">
       STRIVE TO ACHIEVE
     </textPath>
   </text>

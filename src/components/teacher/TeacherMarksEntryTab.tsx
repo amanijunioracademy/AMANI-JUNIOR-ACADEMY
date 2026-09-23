@@ -121,9 +121,6 @@ export const TeacherMarksEntryTab: React.FC<Props> = ({
     return 'E';
   };
 
-  // Real-time synchronization
-  useCentralSync(loadRosterAndMarks);
-
   const loadRosterAndMarks = async () => {
     if (assignedClasses.length === 0) {
       setStudents([]);
@@ -186,6 +183,9 @@ export const TeacherMarksEntryTab: React.FC<Props> = ({
       setIsLoading(false);
     }
   };
+
+  // Real-time synchronization
+  useCentralSync(loadRosterAndMarks);
 
   useEffect(() => {
     loadRosterAndMarks();

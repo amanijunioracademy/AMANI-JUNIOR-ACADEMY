@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { FeeStructureItem } from '../data/feeStructuresData';
-import { Assignment } from '../types';
+import { Assignment, StudentReportCard } from '../types';
 
 export function generateFeeStructurePdf(feeItem: FeeStructureItem, download = true): jsPDF {
   const doc = new jsPDF({
@@ -350,4 +350,407 @@ export function downloadAssignmentPdf(assignment: Assignment): void {
     return;
   }
   generateAssignmentPdf(assignment, true);
+}
+
+/**
+ * Generates an official, strictly single-page per learner PDF report card (A4 portrait).
+ * When multiple cards are provided, each learner is placed on a completely new page.
+ */
+export function generateReportCardsPdf(
+  cards: StudentReportCard[],
+  issueDate: string,
+  download = true
+): jsPDF {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  const pageWidth = doc.internal.pageSize.getWidth(); // 210mm
+  const pageHeight = doc.internal.pageSize.getHeight(); // 297mm
+  const margin = 8;
+  const contentWidth = pageWidth - margin * 2; // 194mm
+
+  cards.forEach((card, index) => {
+    if (index > 0) {
+      doc.addPage();
+    }
+
+    // Outer Navy Border
+    doc.setDrawColor(15, 30, 54);
+    doc.setLineWidth(0.8);
+    doc.rect(margin, margin, contentWidth, pageHeight - margin * 2);
+
+    // Inner Gold Fine Border
+    doc.setDrawColor(197, 155, 39);
+    doc.setLineWidth(0.3);
+    doc.rect(margin + 1.5, margin + 1.5, contentWidth - 3, pageHeight - margin * 2 - 3);
+
+    let y = margin + 7;
+
+    // --- Institutional Header ---
+    doc.setTextColor(15, 30, 54);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('AMANI JUNIOR ACADEMY AND JSS', pageWidth / 2, y, { align: 'center' });
+
+    y += 4.5;
+    doc.setTextColor(180, 83, 9); // Amber 700
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.text(`MOTTO: "${card.schoolMotto || 'STRIVE TO ACHIEVE'}"`, pageWidth / 2, y, { align: 'center' });
+
+    y += 4;
+    doc.setTextColor(71, 85, 105);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.text(
+      'Mazeras, Kilifi County, Kenya • P.O. Box 93-80114 | Tel: 0718 540 922 / 0114 623 408 / 0746 529 712',
+      pageWidth / 2,
+      y,
+      { align: 'center' }
+    );
+
+    y += 3.5;
+    // Title Banner Ribbon
+    doc.setFillColor(15, 30, 54);
+    doc.rect(margin + 3, y, contentWidth - 6, 5.5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.text(
+      'OFFICIAL LEARNER CONTINUOUS ASSESSMENT & PROGRESS REPORT',
+      pageWidth / 2,
+      y + 3.8,
+      { align: 'center' }
+    );
+
+    y += 8;
+
+    // --- Learner Info Box ---
+    const boxX = margin + 3;
+    const boxW = contentWidth - 6;
+    const boxH = 15;
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.rect(boxX, y, boxW, boxH, 'FD');
+
+    const colW = boxW / 4;
+    doc.setFontSize(6.5);
+
+    // Row 1
+    // Col 1
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Learner Full Name:', boxX + 2, y + 3.5);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.text(card.studentName || '—', boxX + 2, y + 6.8);
+
+    // Col 2
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Student ID:', boxX + colW + 2, y + 3.5);
+    doc.setTextColor(15, 30, 54);
+    doc.setFont('helvetica', 'bold');
+    doc.text(card.studentId || '—', boxX + colW + 2, y + 6.8);
+
+    // Col 3
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Admission Number:', boxX + colW * 2 + 2, y + 3.5);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text(card.admissionNumber || '—', boxX + colW * 2 + 2, y + 6.8);
+
+    // Col 4
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Class & Cohort:', boxX + colW * 3 + 2, y + 3.5);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text(card.class || '—', boxX + colW * 3 + 2, y + 6.8);
+
+    // Row 2
+    // Col 1
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Academic Year:', boxX + 2, y + 10.5);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text(card.academicYear || '2026', boxX + 2, y + 13.8);
+
+    // Col 2
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Assessment Term:', boxX + colW + 2, y + 10.5);
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text(card.term || 'Term 1', boxX + colW + 2, y + 13.8);
+
+    // Col 3
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Attendance Register:', boxX + colW * 2 + 2, y + 10.5);
+    doc.setTextColor(22, 101, 52);
+    doc.setFont('helvetica', 'bold');
+    doc.text(
+      `${card.attendanceDaysPresent}/${card.attendanceDaysTotal} Days (${card.attendancePercentage}%)`,
+      boxX + colW * 2 + 2,
+      y + 13.8
+    );
+
+    // Col 4
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Class Standing / Rank:', boxX + colW * 3 + 2, y + 10.5);
+    doc.setTextColor(49, 46, 129);
+    doc.setFont('helvetica', 'bold');
+    doc.text(card.classPosition ? `Rank: ${card.classPosition}` : 'CBC Competency', boxX + colW * 3 + 2, y + 13.8);
+
+    y += boxH + 3;
+
+    // --- Subject Assessment Matrix Table ---
+    const tableX = margin + 3;
+    const tableW = contentWidth - 6;
+    const colWidths = [56, 22, 18, 16, tableW - (56 + 22 + 18 + 16)]; // Total = tableW
+
+    // Header
+    doc.setFillColor(15, 30, 54);
+    doc.rect(tableX, y, tableW, 6, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.text('SUBJECT / LEARNING AREA', tableX + 2, y + 4.2);
+    doc.text('SCORE', tableX + colWidths[0] + colWidths[1] / 2, y + 4.2, { align: 'center' });
+    doc.text('PERCENT', tableX + colWidths[0] + colWidths[1] + colWidths[2] / 2, y + 4.2, { align: 'center' });
+    doc.text('GRADE', tableX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] / 2, y + 4.2, {
+      align: 'center',
+    });
+    doc.text(
+      'COMPETENCIES & TEACHER REMARK',
+      tableX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + 2,
+      y + 4.2
+    );
+
+    y += 6;
+
+    // Subject Rows
+    const subjects = card.subjects || [];
+    const maxSubjectDisplay = 14;
+    const displayedSubjects = subjects.slice(0, maxSubjectDisplay);
+    const rowHeight = subjects.length > 10 ? 5.1 : 5.8;
+
+    displayedSubjects.forEach((sub, sIdx) => {
+      const isEven = sIdx % 2 === 0;
+      doc.setFillColor(isEven ? 255 : 248, isEven ? 255 : 250, isEven ? 255 : 252);
+      doc.rect(tableX, y, tableW, rowHeight, 'F');
+      doc.setDrawColor(226, 232, 240);
+      doc.line(tableX, y + rowHeight, tableX + tableW, y + rowHeight);
+
+      doc.setTextColor(15, 23, 42);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7);
+      const name = sub.subjectName.length > 32 ? sub.subjectName.substring(0, 30) + '...' : sub.subjectName;
+      doc.text(name, tableX + 2, y + rowHeight * 0.7);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      // Score
+      doc.text(
+        `${sub.marksObtained}/${sub.maxMarks}`,
+        tableX + colWidths[0] + colWidths[1] / 2,
+        y + rowHeight * 0.7,
+        { align: 'center' }
+      );
+      // Percentage
+      doc.text(
+        `${sub.percentage}%`,
+        tableX + colWidths[0] + colWidths[1] + colWidths[2] / 2,
+        y + rowHeight * 0.7,
+        { align: 'center' }
+      );
+
+      // Grade
+      doc.setTextColor(180, 83, 9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(
+        sub.grade,
+        tableX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] / 2,
+        y + rowHeight * 0.7,
+        { align: 'center' }
+      );
+
+      // Remark
+      doc.setTextColor(71, 85, 105);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6.5);
+      const comment = sub.teacherComment || 'Satisfactory achievement in CBC core competencies.';
+      const truncatedComment = comment.length > 55 ? comment.substring(0, 52) + '...' : comment;
+      doc.text(
+        truncatedComment,
+        tableX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + 2,
+        y + rowHeight * 0.7
+      );
+
+      y += rowHeight;
+    });
+
+    // Summary / Aggregate Footer Row
+    doc.setFillColor(241, 245, 249);
+    doc.rect(tableX, y, tableW, 6.5, 'F');
+    doc.setDrawColor(15, 30, 54);
+    doc.setLineWidth(0.4);
+    doc.line(tableX, y, tableX + tableW, y);
+    doc.line(tableX, y + 6.5, tableX + tableW, y + 6.5);
+
+    doc.setTextColor(15, 30, 54);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.text('Aggregate Academic Summary', tableX + 2, y + 4.5);
+
+    doc.text(
+      `${card.totalMarksObtained} / ${card.totalMaxPossible}`,
+      tableX + colWidths[0] + colWidths[1] / 2,
+      y + 4.5,
+      { align: 'center' }
+    );
+    doc.setTextColor(22, 101, 52);
+    doc.text(
+      `${card.averagePercentage}%`,
+      tableX + colWidths[0] + colWidths[1] + colWidths[2] / 2,
+      y + 4.5,
+      { align: 'center' }
+    );
+    doc.setTextColor(180, 83, 9);
+    doc.text(
+      card.overallGrade,
+      tableX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] / 2,
+      y + 4.5,
+      { align: 'center' }
+    );
+
+    doc.setTextColor(71, 85, 105);
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(6.5);
+    const summaryRemark =
+      card.overallRemark ||
+      (card.averagePercentage >= 75
+        ? 'Exceeding Expectations (EE) — High academic dedication'
+        : card.averagePercentage >= 50
+        ? 'Meeting Expectations (ME) — Steady consistent progress'
+        : 'Approaching Expectations (AE) — Targeted reinforcement');
+    doc.text(
+      summaryRemark.length > 55 ? summaryRemark.substring(0, 52) + '...' : summaryRemark,
+      tableX + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + 2,
+      y + 4.5
+    );
+
+    y += 10;
+
+    // --- Administrative Sign-off Section ---
+    const signBoxW = (tableW - 4) / 2;
+    const signBoxH = 24;
+
+    // Left: Headteacher Remarks
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.rect(tableX, y, signBoxW, signBoxH, 'FD');
+
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6.8);
+    doc.text("HEADTEACHER'S OFFICIAL REMARKS", tableX + 3, y + 4);
+
+    doc.setTextColor(71, 85, 105);
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(6.5);
+    const htRemarks =
+      card.headteacherRemarks ||
+      `Learner ${card.studentName} exhibits commendable potential. Strive to achieve excellence.`;
+    const splitHt = doc.splitTextToSize(htRemarks, signBoxW - 6);
+    doc.text(splitHt.slice(0, 2), tableX + 3, y + 8);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text(
+      `${card.headteacherName || 'Nadhiri Chacha Salim'} (Headteacher)`,
+      tableX + 3,
+      y + signBoxH - 3
+    );
+    doc.setTextColor(100, 116, 139);
+    doc.text(`Date: ${issueDate.split('-').reverse().join('/')}`, tableX + signBoxW - 3, y + signBoxH - 3, {
+      align: 'right',
+    });
+
+    // Right: Director's Seal & Authorization
+    doc.setFillColor(248, 250, 252);
+    doc.rect(tableX + signBoxW + 4, y, signBoxW, signBoxH, 'FD');
+
+    doc.setTextColor(15, 23, 42);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6.8);
+    doc.text("DIRECTOR'S INSTITUTIONAL SEAL & AUTHORIZATION", tableX + signBoxW + 7, y + 4);
+
+    doc.setTextColor(100, 116, 139);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.text('Amani Junior Academy and JSS — Mazeras, Kilifi County', tableX + signBoxW + 7, y + 8);
+
+    // Official Seal Stamp Box
+    doc.setDrawColor(197, 155, 39);
+    doc.setLineWidth(0.3);
+    doc.setFillColor(254, 243, 199);
+    doc.rect(tableX + signBoxW * 2 + 4 - 24, y + 6.5, 21, 10, 'FD');
+    doc.setTextColor(180, 83, 9);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(5.5);
+    doc.text('OFFICIAL SEAL', tableX + signBoxW * 2 + 4 - 13.5, y + 10.5, { align: 'center' });
+    doc.setFontSize(4.5);
+    doc.text('MAZERAS', tableX + signBoxW * 2 + 4 - 13.5, y + 13.5, { align: 'center' });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text(
+      `${card.directorName || 'Constance Mwaka Pole'} (Director)`,
+      tableX + signBoxW + 7,
+      y + signBoxH - 3
+    );
+
+    y += signBoxH + 4;
+
+    // --- Footer Motto ---
+    doc.setTextColor(148, 163, 184);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6.5);
+    doc.text(
+      '"STRIVE TO ACHIEVE" • MAZERAS, KILIFI COUNTY, KENYA • P.O. BOX 93-80114',
+      pageWidth / 2,
+      pageHeight - margin - 3,
+      { align: 'center' }
+    );
+  });
+
+  if (download) {
+    const filename =
+      cards.length === 1
+        ? `${cards[0].studentName.replace(/[^a-zA-Z0-9]/g, '_')}_Report_Card.pdf`
+        : `Amani_Report_Cards_Batch_${cards.length}_Students.pdf`;
+    doc.save(filename);
+  }
+
+  return doc;
+}
+
+export function downloadReportCardsPdf(
+  cards: StudentReportCard[],
+  issueDate: string
+): void {
+  generateReportCardsPdf(cards, issueDate, true);
 }

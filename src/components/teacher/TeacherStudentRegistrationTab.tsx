@@ -74,9 +74,6 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Automatic real-time cross-device sync
-  useCentralSync(fetchStudents);
-
   const fetchStudents = async () => {
     if (assignedClasses.length === 0) {
       setStudents([]);
@@ -103,6 +100,9 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
       setIsLoading(false);
     }
   };
+
+  // Automatic real-time cross-device sync
+  useCentralSync(fetchStudents);
 
   useEffect(() => {
     if (assignedClasses.length > 0 && selectedClassFilter !== 'ALL' && !assignedClasses.includes(selectedClassFilter)) {

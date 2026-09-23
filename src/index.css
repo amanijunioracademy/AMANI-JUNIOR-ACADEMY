@@ -40,3 +40,105 @@
 .gold-border-glow {
   box-shadow: 0 4px 20px -2px rgba(217, 119, 6, 0.2);
 }
+
+/* =========================================================
+   REPORT CARD STRICT SINGLE-PAGE PRINT RULES (A4 PORTRAIT)
+   ========================================================= */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 6mm 8mm 6mm 8mm;
+  }
+
+  /* Reset body and hide all standard web UI elements */
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Hide headers, navigation, footers, chatbots, floating widgets */
+  header,
+  nav,
+  footer,
+  aside,
+  #chatbot-container,
+  .print-hidden,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Ensure root and app containers do not restrict height or clip pages */
+  #root, #root > div, main {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Dedicated container for report card pages */
+  .report-card-print-container {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    overflow: visible !important;
+  }
+
+  /* EACH INDIVIDUAL LEARNER'S REPORT CARD: EXACTLY ONE FULL PAGE */
+  .report-card-print-page {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    /* Exactly 1 printable A4 page (297mm - 12mm top/bottom margin = 285mm) */
+    height: 284mm !important;
+    max-height: 284mm !important;
+    min-height: 284mm !important;
+    box-sizing: border-box !important;
+    padding: 6mm 7mm !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    border: 3px solid #0F1E36 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important; /* Strictly prevents any spillover onto subsequent page */
+
+    /* Universal multi-engine page break enforcement */
+    page-break-before: auto !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    break-before: auto !important;
+    break-after: page !important;
+    break-inside: avoid !important;
+  }
+
+  /* Prevent trailing blank page on last student */
+  .report-card-print-page:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* Table rules */
+  .report-card-print-page table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .report-card-print-page tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}

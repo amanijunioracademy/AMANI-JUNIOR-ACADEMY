@@ -86,9 +86,6 @@ export const TeacherAssignmentsTab: React.FC<Props> = ({
 
   const isAdministrator = isAdmin || teacherId.includes('admin');
 
-  // Real-time synchronization
-  useCentralSync(fetchAssignments);
-
   const fetchAssignments = async () => {
     if (!isAdministrator && assignedClasses.length === 0) {
       setAssignments([]);
@@ -106,6 +103,9 @@ export const TeacherAssignmentsTab: React.FC<Props> = ({
       setIsLoading(false);
     }
   };
+
+  // Real-time synchronization
+  useCentralSync(fetchAssignments);
 
   useEffect(() => {
     fetchAssignments();

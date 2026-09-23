@@ -159,7 +159,7 @@ export const TeacherPortalPage: React.FC = () => {
             <LogOut className="w-4 h-4" />
             <span>Log Out</span>
           </button>
-          <SchoolLogoBadge size="md" className="bg-white/10 p-1 rounded-2xl" />
+          <SchoolLogoBadge size="md" textColor="light" className="bg-white/10 p-1.5 rounded-2xl" />
         </div>
       </div>
 

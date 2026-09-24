@@ -137,7 +137,7 @@ const defaultState: SchoolDatabaseState = {
   teachers: initialTeachers,
   classes: initialClasses,
   subjects: initialSubjects,
-  students: [...initialStudents, ...grade5Students],
+  students: initialStudents,
   learners: initialLearners,
   teacherStudentLinks: initialTeacherStudentLinks,
   marks: initialMarks,
@@ -313,6 +313,26 @@ function saveDatabase(state: SchoolDatabaseState) {
   } catch (err) {
     console.error('Error writing database file:', err);
   }
+}
+
+// Grade normalizer helper
+function normalizeGrade(className?: string, explicitGrade?: string): string {
+  if (explicitGrade && explicitGrade.trim() && explicitGrade.trim().toLowerCase() !== 'grade') {
+    return explicitGrade.trim();
+  }
+  if (!className) return 'Grade 7';
+  const c = className.trim();
+  const gradeMatch = c.match(/Grade\s*(\d+[A-Za-z]?)/i);
+  if (gradeMatch) {
+    const raw = gradeMatch[1].trim();
+    const num = raw.match(/^\d+/)?.[0];
+    return num ? `Grade ${num}` : `Grade ${raw}`;
+  }
+  if (/pp\s*1|pre-primary\s*1/i.test(c)) return 'Pre-Primary 1';
+  if (/pp\s*2|pre-primary\s*2/i.test(c)) return 'Pre-Primary 2';
+  if (/daycare/i.test(c)) return 'Daycare';
+  if (/playgroup/i.test(c)) return 'Playgroup';
+  return c.split('(')[0].trim() || 'Grade 7';
 }
 
 // Authorization Helper: get all class matching tokens for a teacher
@@ -1061,6 +1081,7 @@ app.get('/api/sync/status', (req: Request, res: Response) => {
     success: true,
     serverTimestamp: new Date().toISOString(),
     lastModified: dbLastModified,
+    dbLastModified: dbLastModified,
     stats: {
       studentsCount: db.students.length,
       marksCount: db.marks.length,
@@ -1075,6 +1096,7 @@ app.get('/api/sync/pull', (req: Request, res: Response) => {
     success: true,
     serverTimestamp: new Date().toISOString(),
     lastModified: dbLastModified,
+    dbLastModified: dbLastModified,
     students: db.students,
     marks: db.marks,
     attendance: db.attendance,
@@ -1105,6 +1127,7 @@ app.post('/api/sync', (req: Request, res: Response) => {
           ...db.students[existingIdx],
           ...incoming,
           admissionNumber: cleanAdm,
+          grade: normalizeGrade(incoming.class || db.students[existingIdx].class, incoming.grade || db.students[existingIdx].grade),
           updatedAt: new Date().toISOString(),
         };
         studentsSynced++;
@@ -1121,17 +1144,21 @@ app.post('/api/sync', (req: Request, res: Response) => {
           }, 25);
           sid = `STU-${String(maxNum + 1).padStart(5, '0')}`;
         }
+        const incomingClass = incoming.class || 'Grade 7 (JSS)';
         const newStu: Student = {
           id: incoming.id || `stu-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
           studentId: sid,
           admissionNumber: cleanAdm,
           fullName: incoming.fullName.trim(),
-          class: incoming.class || 'Grade 7A (JSS)',
-          grade: incoming.grade || (incoming.class ? incoming.class.split(' ')[0] : 'Grade 7'),
+          class: incomingClass,
+          grade: normalizeGrade(incomingClass, incoming.grade),
           academicYear: incoming.academicYear || '2026',
           status: incoming.status || 'ACTIVE',
           gender: incoming.gender || 'M',
           dateOfBirth: incoming.dateOfBirth || '2012-05-15',
+          assessmentNumber: incoming.assessmentNumber || cleanAdm,
+          religiousSubject: incoming.religiousSubject || 'CRE',
+          language: incoming.language || 'KIS',
           guardianName: incoming.guardianName || '',
           guardianPhone: incoming.guardianPhone || '',
           guardianEmail: incoming.guardianEmail || '',
@@ -1225,6 +1252,11 @@ app.post('/api/sync', (req: Request, res: Response) => {
     success: true,
     serverTimestamp: new Date().toISOString(),
     lastModified: dbLastModified,
+    dbLastModified: dbLastModified,
+    students: db.students,
+    marks: db.marks,
+    attendance: db.attendance,
+    assignments: db.assignments || [],
     synced: {
       students: studentsSynced,
       marks: marksSynced,
@@ -1357,22 +1389,25 @@ app.post('/api/students', (req: Request, res: Response) => {
   const generatedStudentId = `STU-${nextIdNum}`;
 
   const newStudent: Student = {
-    id: req.body.id || `stu-${Date.now()}`,
+    id: req.body.id || `stu-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
     studentId: req.body.studentId || generatedStudentId,
     admissionNumber: cleanAdm,
     fullName: cleanName,
     class: className,
-    grade: grade || className.split(' ')[0] || 'Grade 7',
+    grade: normalizeGrade(className, grade),
     academicYear,
     status: 'ACTIVE',
-    dateOfBirth,
-    gender,
-    guardianName,
-    guardianPhone,
-    guardianEmail,
+    dateOfBirth: dateOfBirth || '2014-05-15',
+    gender: gender === 'F' ? 'F' : 'M',
+    guardianName: guardianName || '',
+    guardianPhone: guardianPhone || '',
+    guardianEmail: guardianEmail || '',
     specialNeeds: req.body.specialNeeds || '',
+    assessmentNumber: req.body.assessmentNumber || cleanAdm,
+    religiousSubject: req.body.religiousSubject || 'CRE',
+    language: req.body.language || 'KIS',
     registeredByTeacherId: req.body.registeredByTeacherId,
-    registeredBy: req.body.registeredBy,
+    registeredBy: req.body.registeredBy || 'Teacher / Admin',
     createdAt: req.body.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -1409,7 +1444,10 @@ app.put('/api/students/:id', (req: Request, res: Response) => {
     }
   }
 
-  const updates = req.body;
+  const updates = { ...req.body };
+  if (updates.class) {
+    updates.grade = normalizeGrade(updates.class, updates.grade);
+  }
   Object.assign(student, updates, { updatedAt: new Date().toISOString() });
   saveDatabase(db);
 

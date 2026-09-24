@@ -3,6 +3,7 @@ import { Student, SchoolClass } from '../../types';
 import { api } from '../../services/api';
 import { useCentralSync } from '../../hooks/useCentralSync';
 import { CentralSyncBadge } from '../common/CentralSyncBadge';
+import { normalizeGrade } from '../../utils/studentUtils';
 import {
   Users,
   Search,
@@ -46,6 +47,10 @@ export const StudentDatabaseTab: React.FC<Props> = ({ classes }) => {
   const [guardianName, setGuardianName] = useState('');
   const [guardianPhone, setGuardianPhone] = useState('');
   const [guardianEmail, setGuardianEmail] = useState('');
+  const [assessmentNumber, setAssessmentNumber] = useState('');
+  const [religiousSubject, setReligiousSubject] = useState<'CRE' | 'IRE' | 'HRE'>('CRE');
+  const [language, setLanguage] = useState<'KIS' | 'ENG'>('KIS');
+  const [specialNeeds, setSpecialNeeds] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -94,6 +99,10 @@ export const StudentDatabaseTab: React.FC<Props> = ({ classes }) => {
     setGuardianName('');
     setGuardianPhone('');
     setGuardianEmail('');
+    setAssessmentNumber('');
+    setReligiousSubject('CRE');
+    setLanguage('KIS');
+    setSpecialNeeds('');
     setFormError(null);
     setDuplicateWarning(null);
     setIsAddModalOpen(true);
@@ -110,6 +119,10 @@ export const StudentDatabaseTab: React.FC<Props> = ({ classes }) => {
     setGuardianName(student.guardianName || '');
     setGuardianPhone(student.guardianPhone || '');
     setGuardianEmail(student.guardianEmail || '');
+    setAssessmentNumber(student.assessmentNumber || student.admissionNumber || '');
+    setReligiousSubject((student.religiousSubject as any) || 'CRE');
+    setLanguage((student.language as any) || 'KIS');
+    setSpecialNeeds(student.specialNeeds || '');
     setFormError(null);
     setDuplicateWarning(null);
     setIsAddModalOpen(true);
@@ -129,29 +142,47 @@ export const StudentDatabaseTab: React.FC<Props> = ({ classes }) => {
         fullName: fullName.trim(),
         admissionNumber: admissionNumber.trim(),
         class: selectedClass,
-        grade: selectedClass.includes('Grade 7')
-          ? 'Grade 7'
-          : selectedClass.includes('Grade 8')
-          ? 'Grade 8'
-          : selectedClass.includes('Grade 9')
-          ? 'Grade 9'
-          : selectedClass.split(' ')[0] || 'Grade 7',
+        grade: normalizeGrade(selectedClass),
         gender,
         dateOfBirth,
         guardianName: guardianName.trim(),
         guardianPhone: guardianPhone.trim(),
         guardianEmail: guardianEmail.trim(),
         academicYear,
+        assessmentNumber: assessmentNumber.trim() || admissionNumber.trim(),
+        religiousSubject,
+        language,
+        specialNeeds: specialNeeds.trim(),
         confirmDuplicate,
       };
 
       if (editingStudentId) {
-        await api.updateStudent(editingStudentId, payload);
+        const updateRes = await api.updateStudent(editingStudentId, payload);
+        if (updateRes?.student) {
+          setStudents((prev) =>
+            prev.map((s) =>
+              s.id === updateRes.student.id || s.studentId === updateRes.student.studentId
+                ? updateRes.student
+                : s
+            )
+          );
+        }
         if (selectedStudent && (selectedStudent.student.id === editingStudentId || selectedStudent.student.studentId === editingStudentId)) {
           handleViewStudentProfile(editingStudentId);
         }
       } else {
-        await api.createStudent(payload);
+        const res = await api.createStudent(payload);
+        if (res?.student) {
+          setStudents((prev) => {
+            const exists = prev.some((s) => s.id === res.student.id || s.studentId === res.student.studentId);
+            if (exists) return prev;
+            return [res.student, ...prev];
+          });
+        }
+        // If viewing another class filter, align so learner is immediately visible
+        if (selectedClassFilter && selectedClassFilter !== selectedClass) {
+          setSelectedClassFilter(selectedClass);
+        }
       }
 
       setIsAddModalOpen(false);
@@ -498,6 +529,53 @@ export const StudentDatabaseTab: React.FC<Props> = ({ classes }) => {
                     onChange={(e) => setAcademicYear(e.target.value)}
                     placeholder="e.g. 2026"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-amber-500 text-slate-800 font-mono font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">KNEC / Assessment Number</label>
+                  <input
+                    type="text"
+                    value={assessmentNumber}
+                    onChange={(e) => setAssessmentNumber(e.target.value)}
+                    placeholder="e.g. 01234567-001 (Optional)"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-amber-500 text-slate-800 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Religious Education Option</label>
+                  <select
+                    value={religiousSubject}
+                    onChange={(e) => setReligiousSubject(e.target.value as any)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-amber-500 bg-white text-slate-800"
+                  >
+                    <option value="CRE">Christian Religious Education (CRE)</option>
+                    <option value="IRE">Islamic Religious Education (IRE)</option>
+                    <option value="HRE">Hindu Religious Education (HRE)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Language Specialization</label>
+                  <select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value as any)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-amber-500 bg-white text-slate-800"
+                  >
+                    <option value="KIS">Kiswahili</option>
+                    <option value="ENG">English</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block font-bold text-slate-700 mb-1">Special Educational Needs / Health Notes</label>
+                  <input
+                    type="text"
+                    value={specialNeeds}
+                    onChange={(e) => setSpecialNeeds(e.target.value)}
+                    placeholder="e.g. None, Asthma, Mild vision impairment"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-amber-500 text-slate-800"
                   />
                 </div>
               </div>

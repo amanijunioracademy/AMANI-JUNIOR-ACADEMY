@@ -38,6 +38,7 @@ import {
 } from '../data/schoolInitialData';
 import { grade5Students } from '../data/grade5Students';
 import { initialFeeStructures, FeeStructureItem } from '../data/feeStructuresData';
+import { normalizeGrade } from '../utils/studentUtils';
 
 const defaultSampleStudents: Student[] = [
   ...grade5Students,
@@ -477,10 +478,24 @@ export class LocalDatabase {
       list = [...defaultSampleStudents];
       setToStorage('amani_students', list);
     } else {
-      // Ensure official KNEC Grade 5 learners are synchronized
-      const nonGrade5 = list.filter((s) => !s.class?.toLowerCase().includes('grade 5') && !s.grade?.toLowerCase().includes('grade 5'));
-      list = [...grade5Students, ...nonGrade5];
-      setToStorage('amani_students', list);
+      // Non-destructive: ensure canonical KNEC Grade 5 learners are included if missing,
+      // without wiping out manually registered Grade 5 learners or any other class!
+      let missingCount = 0;
+      for (const g5 of grade5Students) {
+        const cleanG5Adm = (g5.admissionNumber || '').trim().toUpperCase();
+        const exists = list.some(
+          (s) =>
+            s.studentId === g5.studentId ||
+            (s.admissionNumber && s.admissionNumber.trim().toUpperCase() === cleanG5Adm)
+        );
+        if (!exists) {
+          list.push(g5);
+          missingCount++;
+        }
+      }
+      if (missingCount > 0) {
+        setToStorage('amani_students', list);
+      }
     }
 
     if (params?.teacherId) {
@@ -493,7 +508,10 @@ export class LocalDatabase {
         const allowed = rawClasses.map((c: string) => c.trim().toLowerCase());
         if (allowed.length > 0) {
           list = list.filter((s) =>
-            allowed.some((c: string) => s.class.toLowerCase() === c || s.class.toLowerCase().includes(c) || c.includes(s.class.toLowerCase()))
+            allowed.some((c: string) => {
+              const sc = (s.class || '').toLowerCase();
+              return sc === c || sc.includes(c) || c.includes(sc);
+            })
           );
         } else {
           list = [];
@@ -502,20 +520,27 @@ export class LocalDatabase {
     }
 
     if (params?.class) {
-      const cls = params.class.toLowerCase();
-      list = list.filter((s) => s.class.toLowerCase().includes(cls) || cls.includes(s.class.toLowerCase()));
+      const cls = params.class.toLowerCase().trim();
+      list = list.filter((s) => {
+        const sc = (s.class || '').toLowerCase().trim();
+        return sc === cls || sc.includes(cls) || cls.includes(sc);
+      });
     }
     if (params?.grade) {
-      const grd = params.grade.toLowerCase();
-      list = list.filter((s) => s.grade.toLowerCase().includes(grd) || grd.includes(s.grade.toLowerCase()));
+      const grd = params.grade.toLowerCase().trim();
+      list = list.filter((s) => {
+        const sg = (s.grade || normalizeGrade(s.class)).toLowerCase().trim();
+        return sg === grd || sg.includes(grd) || grd.includes(sg);
+      });
     }
     if (params?.search) {
-      const q = params.search.toLowerCase();
+      const q = params.search.toLowerCase().trim();
       list = list.filter(
         (s) =>
-          s.fullName.toLowerCase().includes(q) ||
-          s.studentId.toLowerCase().includes(q) ||
-          s.admissionNumber.toLowerCase().includes(q)
+          (s.fullName || '').toLowerCase().includes(q) ||
+          (s.studentId || '').toLowerCase().includes(q) ||
+          (s.admissionNumber || '').toLowerCase().includes(q) ||
+          (s.class || '').toLowerCase().includes(q)
       );
     }
     return list;
@@ -525,7 +550,7 @@ export class LocalDatabase {
     const students = this.getStudents();
     const cleanAdm = (payload.admissionNumber || '').trim().toUpperCase();
     const cleanName = (payload.fullName || '').trim().toLowerCase();
-    const cleanClass = (payload.class || '').trim().toLowerCase();
+    const cleanClass = (payload.class || '').trim();
 
     // Check duplicate admission number
     if (cleanAdm) {
@@ -538,38 +563,46 @@ export class LocalDatabase {
     // Check duplicate name in class
     if (cleanName && cleanClass) {
       const existingName = students.find(
-        (s) => s.fullName.toLowerCase() === cleanName && s.class.toLowerCase() === cleanClass
+        (s) => s.fullName.toLowerCase() === cleanName && s.class.toLowerCase() === cleanClass.toLowerCase()
       );
       if (existingName) {
         throw new Error(`A learner named "${payload.fullName}" is already registered in ${existingName.class}.`);
       }
     }
 
-    const nextNum = students.length + 30;
-    const nextId = `STU-${String(nextNum).padStart(5, '0')}`;
-    const nextAdm = cleanAdm || `ADM-2026-${String(nextNum).padStart(3, '0')}`;
+    const maxNum = students.reduce((max, s) => {
+      const match = s.studentId?.match(/STU-(\d+)/);
+      if (match) {
+        const n = parseInt(match[1], 10);
+        return n > max ? n : max;
+      }
+      return max;
+    }, 25);
+    const nextId = `STU-${String(maxNum + 1).padStart(5, '0')}`;
+    const nextAdm = cleanAdm || `ADM-2026-${String(maxNum + 1).padStart(3, '0')}`;
 
     const newStudent: Student = {
-      id: `stu-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      id: payload.id || `stu-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       studentId: payload.studentId || nextId,
       admissionNumber: nextAdm,
-      fullName: payload.fullName || 'New Learner',
-      class: payload.class || 'Grade 7A (JSS)',
-      grade: payload.grade || (payload.class?.includes('Grade 5') ? 'Grade 5' : payload.class?.includes('Grade 7') ? 'Grade 7' : 'Primary'),
+      fullName: (payload.fullName || 'New Learner').trim(),
+      class: cleanClass || 'Grade 7 (JSS)',
+      grade: normalizeGrade(cleanClass, payload.grade),
       academicYear: payload.academicYear || '2026',
       dateOfBirth: payload.dateOfBirth || '2014-05-15',
       gender: payload.gender === 'F' ? 'F' : 'M',
-      assessmentNumber: payload.assessmentNumber,
-      religiousSubject: payload.religiousSubject,
-      language: payload.language,
-      registeredBy: payload.registeredBy,
+      assessmentNumber: payload.assessmentNumber || nextAdm,
+      religiousSubject: payload.religiousSubject || 'CRE',
+      language: payload.language || 'KIS',
+      registeredBy: payload.registeredBy || 'Teacher / Admin',
       registeredByTeacherId: payload.registeredByTeacherId,
-      guardianName: payload.guardianName || 'Parent / Guardian',
-      guardianPhone: payload.guardianPhone || '0700000000',
+      guardianName: payload.guardianName || '',
+      guardianPhone: payload.guardianPhone || '',
       guardianEmail: payload.guardianEmail || '',
       specialNeeds: payload.specialNeeds || '',
       status: 'ACTIVE',
-      createdAt: new Date().toISOString(),
+      createdAt: payload.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     students.unshift(newStudent);
@@ -587,7 +620,16 @@ export class LocalDatabase {
         (s.admissionNumber && s.admissionNumber.toLowerCase() === target)
     );
     if (idx === -1) throw new Error('Student not found');
-    students[idx] = { ...students[idx], ...updates };
+    const updatedClass = updates.class || students[idx].class;
+    const updatedGrade = updates.grade || (updates.class ? normalizeGrade(updates.class) : students[idx].grade);
+
+    students[idx] = {
+      ...students[idx],
+      ...updates,
+      class: updatedClass,
+      grade: updatedGrade,
+      updatedAt: new Date().toISOString(),
+    };
     setToStorage('amani_students', students);
     return { success: true, student: students[idx] };
   }
@@ -1115,10 +1157,13 @@ export class LocalDatabase {
     if (params.studentId) {
       target = target.filter((s) => s.studentId === params.studentId);
     } else if (params.classId) {
-      const cls = initialClasses.find((c) => c.id === params.classId);
-      if (cls) {
-        target = target.filter((s) => s.class.toLowerCase().includes(cls.name.toLowerCase()) || s.class === cls.name);
-      }
+      const search = params.classId.toLowerCase().trim();
+      const cls = initialClasses.find((c) => c.id.toLowerCase() === search || c.name.toLowerCase() === search);
+      const matchName = cls ? cls.name.toLowerCase() : search;
+      target = target.filter((s) => {
+        const sc = (s.class || '').toLowerCase();
+        return sc === matchName || sc.includes(matchName) || matchName.includes(sc);
+      });
     }
 
     const allSubjects = initialSubjects;

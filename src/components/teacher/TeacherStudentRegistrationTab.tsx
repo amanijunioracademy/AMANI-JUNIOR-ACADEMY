@@ -3,6 +3,7 @@ import { Student } from '../../types';
 import { api } from '../../services/api';
 import { useCentralSync } from '../../hooks/useCentralSync';
 import { CentralSyncBadge } from '../common/CentralSyncBadge';
+import { normalizeGrade } from '../../utils/studentUtils';
 import {
   UserPlus,
   Users,
@@ -19,6 +20,7 @@ import {
   GraduationCap,
   ShieldCheck,
   RefreshCw,
+  BookOpen,
 } from 'lucide-react';
 
 interface Props {
@@ -65,6 +67,9 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
   const [guardianPhone, setGuardianPhone] = useState('');
   const [guardianEmail, setGuardianEmail] = useState('');
   const [specialNeeds, setSpecialNeeds] = useState('');
+  const [assessmentNumber, setAssessmentNumber] = useState('');
+  const [religiousSubject, setReligiousSubject] = useState<'CRE' | 'IRE' | 'HRE'>('CRE');
+  const [language, setLanguage] = useState<'KIS' | 'ENG'>('KIS');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -138,6 +143,9 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
       setGuardianPhone(student.guardianPhone || '');
       setGuardianEmail(student.guardianEmail || '');
       setSpecialNeeds(student.specialNeeds || '');
+      setAssessmentNumber(student.assessmentNumber || student.admissionNumber || '');
+      setReligiousSubject((student.religiousSubject as any) || 'CRE');
+      setLanguage((student.language as any) || 'KIS');
     } else {
       setEditingStudentId(null);
       setFullName('');
@@ -150,6 +158,9 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
       setGuardianPhone('');
       setGuardianEmail('');
       setSpecialNeeds('');
+      setAssessmentNumber('');
+      setReligiousSubject('CRE');
+      setLanguage('KIS');
     }
     setFormError(null);
     setIsAddModalOpen(true);
@@ -167,39 +178,39 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
 
     try {
       if (editingStudentId) {
-        await api.updateStudent(editingStudentId, {
+        const updateRes = await api.updateStudent(editingStudentId, {
           fullName: fullName.trim(),
           admissionNumber: admissionNumber.trim(),
           class: studentClass,
-          grade: studentClass.includes('Grade 7')
-            ? 'Grade 7'
-            : studentClass.includes('Grade 8')
-            ? 'Grade 8'
-            : studentClass.includes('Grade 9')
-            ? 'Grade 9'
-            : studentClass.split(' ')[0],
+          grade: normalizeGrade(studentClass),
           gender,
           dateOfBirth,
           guardianName: guardianName.trim(),
           guardianPhone: guardianPhone.trim(),
           guardianEmail: guardianEmail.trim(),
           specialNeeds: specialNeeds.trim(),
+          assessmentNumber: assessmentNumber.trim() || admissionNumber.trim(),
+          religiousSubject,
+          language,
           registeredByTeacherId: teacherId,
           registeredBy: teacherName,
         });
+        if (updateRes?.student) {
+          setStudents((prev) =>
+            prev.map((s) =>
+              s.id === updateRes.student.id || s.studentId === updateRes.student.studentId
+                ? updateRes.student
+                : s
+            )
+          );
+        }
         setSuccessBanner(`Student record for "${fullName}" successfully updated.`);
       } else {
         const res = await api.createStudent({
           fullName: fullName.trim(),
           admissionNumber: admissionNumber.trim(),
           class: studentClass,
-          grade: studentClass.includes('Grade 7')
-            ? 'Grade 7'
-            : studentClass.includes('Grade 8')
-            ? 'Grade 8'
-            : studentClass.includes('Grade 9')
-            ? 'Grade 9'
-            : studentClass.split(' ')[0],
+          grade: normalizeGrade(studentClass),
           academicYear: academicYear.trim() || '2026',
           status: 'ACTIVE',
           gender,
@@ -208,11 +219,26 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
           guardianPhone: guardianPhone.trim(),
           guardianEmail: guardianEmail.trim(),
           specialNeeds: specialNeeds.trim(),
+          assessmentNumber: assessmentNumber.trim() || admissionNumber.trim(),
+          religiousSubject,
+          language,
           registeredByTeacherId: teacherId,
           registeredBy: teacherName,
         });
 
-        // Also automatically link this student to teacher's class
+        // Immediately update state so student appears without delay
+        if (res?.student) {
+          setStudents((prev) => {
+            const exists = prev.some((s) => s.id === res.student.id || s.studentId === res.student.studentId);
+            if (exists) return prev;
+            return [res.student, ...prev];
+          });
+        }
+
+        // Align view filter with registered student's class if a specific other filter was active
+        if (selectedClassFilter !== 'ALL' && selectedClassFilter !== studentClass) {
+          setSelectedClassFilter(studentClass);
+        }
         setSuccessBanner(`Learner "${res.student.fullName}" successfully registered with Student ID ${res.student.studentId}.`);
       }
 
@@ -705,6 +731,48 @@ export const TeacherStudentRegistrationTab: React.FC<Props> = ({
                     placeholder="e.g. 2026"
                     className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-amber-500 text-slate-800 font-mono font-bold"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    KNEC / CBA Assessment Number
+                  </label>
+                  <input
+                    type="text"
+                    value={assessmentNumber}
+                    onChange={(e) => setAssessmentNumber(e.target.value)}
+                    placeholder="e.g. 01234567-001 (Optional)"
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-amber-500 text-slate-800 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Religious Education Option
+                  </label>
+                  <select
+                    value={religiousSubject}
+                    onChange={(e) => setReligiousSubject(e.target.value as any)}
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-amber-500 bg-white text-slate-800"
+                  >
+                    <option value="CRE">Christian Religious Education (CRE)</option>
+                    <option value="IRE">Islamic Religious Education (IRE)</option>
+                    <option value="HRE">Hindu Religious Education (HRE)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Language Specialization
+                  </label>
+                  <select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value as any)}
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-amber-500 bg-white text-slate-800"
+                  >
+                    <option value="KIS">Kiswahili</option>
+                    <option value="ENG">English</option>
+                  </select>
                 </div>
               </div>
 

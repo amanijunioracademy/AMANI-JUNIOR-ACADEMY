@@ -45,11 +45,45 @@ export interface SchoolDataPayload {
   knowledgeBaseSummary: Array<{ id: string; category: string; question: string }>;
 }
 
+let apiServerStatus: 'UNKNOWN' | 'AVAILABLE' | 'UNAVAILABLE' = 'UNKNOWN';
+
+export function isKnownStaticHost(): boolean {
+  if (typeof window === 'undefined') return false;
+  const host = window.location.hostname.toLowerCase();
+  return (
+    host.includes('vercel.app') ||
+    host.includes('netlify.app') ||
+    host.includes('github.io') ||
+    host.includes('pages.dev') ||
+    host.includes('render.com') ||
+    host.includes('firebaseapp.com') ||
+    host.includes('web.app')
+  );
+}
+
+export function isStaticHostOrUnavailable(): boolean {
+  if (isKnownStaticHost()) return true;
+  return apiServerStatus === 'UNAVAILABLE';
+}
+
+export function markApiUnavailable(): void {
+  apiServerStatus = 'UNAVAILABLE';
+}
+
+export function markApiAvailable(): void {
+  apiServerStatus = 'AVAILABLE';
+}
+
 async function callApiWithFallback<T>(
   url: string,
   options: RequestInit | undefined,
   fallbackFn: () => Promise<T> | T
 ): Promise<T> {
+  // If we already know the environment is a static host or central API is offline, execute fallback directly
+  if (isStaticHostOrUnavailable()) {
+    return await fallbackFn();
+  }
+
   try {
     const res = await fetch(url, options);
     const contentType = res.headers.get('content-type') || '';
@@ -58,30 +92,36 @@ async function callApiWithFallback<T>(
     if (contentType.includes('application/json')) {
       const data = await res.json();
       if (!res.ok) {
-        // If it's a 404 route on host (e.g. serverless route missing), fallback
-        if (res.status === 404) {
+        // If it's a 404 or 405 route on host (e.g. static host without serverless functions), fallback
+        if (res.status === 404 || res.status === 405) {
+          markApiUnavailable();
           return await fallbackFn();
         }
         throw new Error(data.error || data.message || `Request failed with status ${res.status}`);
       }
+      markApiAvailable();
       return data;
     }
 
     // If response was HTML (e.g. Vercel/Netlify SPA rewrite /* -> index.html) or other non-JSON
+    markApiUnavailable();
     return await fallbackFn();
   } catch (err: any) {
-    // If network error, connection refused, or unexpected token '<'
+    // If business error (e.g. validation, duplicate, unauthorized), preserve it
     if (
-      err.name === 'TypeError' ||
-      (err.message &&
-        (err.message.includes('Failed to fetch') ||
-          err.message.includes('NetworkError') ||
-          err.message.includes('Unexpected token') ||
-          err.message.includes('not valid JSON')))
+      err.message &&
+      (err.message.includes('already exists') ||
+        err.message.includes('already registered') ||
+        err.message.includes('Invalid credentials') ||
+        err.message.includes('Unauthorized') ||
+        err.message.includes('Forbidden'))
     ) {
-      return await fallbackFn();
+      throw err;
     }
-    throw err;
+
+    // If network error, connection refused, non-JSON response, or unexpected HTML token '<'
+    markApiUnavailable();
+    return await fallbackFn();
   }
 }
 
@@ -136,16 +176,7 @@ export const api = {
 
   // Authentication
   async login(payload: { identifier: string; password: string }) {
-    // Check if running on static cloud hosting (Vercel, Netlify, Cloudflare Pages, GitHub Pages)
-    const isStaticDeployment =
-      typeof window !== 'undefined' &&
-      (window.location.hostname.includes('vercel.app') ||
-        window.location.hostname.includes('netlify.app') ||
-        window.location.hostname.includes('pages.dev') ||
-        window.location.hostname.includes('cloudflare') ||
-        window.location.hostname.includes('github.io'));
-
-    if (isStaticDeployment) {
+    if (isStaticHostOrUnavailable()) {
       return localDb.login(payload.identifier, payload.password);
     }
 
@@ -159,7 +190,10 @@ export const api = {
       const contentType = res.headers.get('content-type') || '';
       if (contentType.includes('application/json')) {
         const data = await res.json();
-        if (res.ok) return data;
+        if (res.ok) {
+          markApiAvailable();
+          return data;
+        }
         // If server actively returned password rejected
         if (res.status === 401 && data.error && !data.error.includes('Not Found')) {
           try {
@@ -170,8 +204,10 @@ export const api = {
         }
       }
       // On static or serverless environments where /api/auth/login is not an Express server
+      markApiUnavailable();
       return localDb.login(payload.identifier, payload.password);
     } catch {
+      markApiUnavailable();
       return localDb.login(payload.identifier, payload.password);
     }
   },
@@ -254,10 +290,19 @@ export const api = {
     const url = q.toString() ? `/api/students?${q.toString()}` : '/api/students';
 
     return callApiWithFallback<Student[]>(url, undefined, () => localDb.getStudents(params)).then((students) => {
-      // If full list was loaded, keep local cache warm
-      if (Array.isArray(students) && !params?.search && !params?.class && !params?.grade && !params?.teacherId) {
+      // Keep local cache warm and merged with all fresh data from server
+      if (Array.isArray(students) && students.length > 0) {
         try {
-          localStorage.setItem('amani_students', JSON.stringify(students));
+          const current = localDb.getStudents();
+          students.forEach((s) => {
+            const idx = current.findIndex((cs) => cs.studentId === s.studentId || cs.id === s.id);
+            if (idx >= 0) {
+              current[idx] = s;
+            } else {
+              current.unshift(s);
+            }
+          });
+          localStorage.setItem('amani_students', JSON.stringify(current));
         } catch {}
       }
       return students;
@@ -273,6 +318,15 @@ export const api = {
   },
 
   async createStudent(payload: Partial<Student> & { confirmDuplicate?: boolean }) {
+    // If on a static host (Vercel, Netlify, GitHub Pages) or central API is offline, execute directly in local DB
+    if (isStaticHostOrUnavailable()) {
+      const localRes = localDb.createStudent(payload);
+      if (localRes.student) {
+        syncService.notifyDataChange();
+      }
+      return localRes;
+    }
+
     try {
       const res = await fetch('/api/students', {
         method: 'POST',
@@ -281,11 +335,9 @@ export const api = {
       });
 
       const contentType = res.headers.get('content-type') || '';
-      if (contentType.includes('application/json')) {
+      if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error || data.message || `Failed to register student (Status ${res.status})`);
-        }
+        markApiAvailable();
         if (data.student) {
           // Update local cache immediately
           const current = localDb.getStudents();
@@ -297,101 +349,123 @@ export const api = {
         }
         return data;
       }
-      throw new Error('Non-JSON response received from central server');
-    } catch (err: any) {
-      // Check if network error/offline: fallback to local and queue in sync outbox
-      const isNetworkError =
-        err.name === 'TypeError' ||
-        (err.message &&
-          (err.message.includes('Failed to fetch') ||
-            err.message.includes('NetworkError') ||
-            err.message.includes('Unexpected token') ||
-            err.message.includes('not valid JSON')));
 
-      if (isNetworkError) {
-        const localRes = localDb.createStudent(payload);
-        if (localRes.student) {
-          syncService.queueOutboxItem({
-            type: 'STUDENT',
-            action: 'CREATE',
-            payload: localRes.student,
-          });
-          syncService.notifyDataChange();
-        }
-        return localRes;
+      // If server returned a business/validation error in JSON (e.g. 400 Duplicate admission number)
+      if (!res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        throw new Error(data.error || data.message || `Failed to register student (Status ${res.status})`);
       }
-      throw err;
+
+      // If response is HTML (e.g. Vercel/Netlify SPA rewrite /* -> index.html) or 404/405/non-JSON:
+      markApiUnavailable();
+      const localRes = localDb.createStudent(payload);
+      if (localRes.student) {
+        syncService.notifyDataChange();
+      }
+      return localRes;
+    } catch (err: any) {
+      // If it is a duplicate validation error or business error, rethrow so the user gets the clear prompt
+      if (err.message && (err.message.includes('already exists') || err.message.includes('already registered'))) {
+        throw err;
+      }
+
+      // If server is not responding, returned non-JSON, or on static hosting, fallback to local storage database
+      markApiUnavailable();
+      const localRes = localDb.createStudent(payload);
+      if (localRes.student) {
+        syncService.notifyDataChange();
+      }
+      return localRes;
     }
   },
 
   async updateStudent(id: string, updates: Partial<Student>) {
+    if (isStaticHostOrUnavailable()) {
+      const localRes = localDb.updateStudent(id, updates);
+      syncService.notifyDataChange();
+      return localRes;
+    }
+
     try {
       const res = await fetch(`/api/students/${encodeURIComponent(id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
       });
-      const data = await res.json();
-      if (!res.ok) {
+
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        markApiAvailable();
+        if (data.student) {
+          const current = localDb.getStudents();
+          const idx = current.findIndex((s) => s.id === id || s.studentId === id);
+          if (idx >= 0) current[idx] = data.student;
+          localStorage.setItem('amani_students', JSON.stringify(current));
+          syncService.notifyDataChange();
+        }
+        return data;
+      }
+
+      if (!res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
         throw new Error(data.error || data.message || `Failed to update student`);
       }
-      if (data.student) {
-        const current = localDb.getStudents();
-        const idx = current.findIndex((s) => s.id === id || s.studentId === id);
-        if (idx >= 0) current[idx] = data.student;
-        localStorage.setItem('amani_students', JSON.stringify(current));
-        syncService.notifyDataChange();
-      }
-      return data;
+
+      markApiUnavailable();
+      const localRes = localDb.updateStudent(id, updates);
+      syncService.notifyDataChange();
+      return localRes;
     } catch (err: any) {
-      const isNetworkError =
-        err.name === 'TypeError' ||
-        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
-      if (isNetworkError) {
-        const localRes = localDb.updateStudent(id, updates);
-        syncService.queueOutboxItem({
-          type: 'STUDENT',
-          action: 'UPDATE',
-          payload: { id, ...updates },
-        });
-        syncService.notifyDataChange();
-        return localRes;
+      if (err.message && (err.message.includes('already exists') || err.message.includes('already registered'))) {
+        throw err;
       }
-      throw err;
+      markApiUnavailable();
+      const localRes = localDb.updateStudent(id, updates);
+      syncService.notifyDataChange();
+      return localRes;
     }
   },
 
   async deleteStudent(id: string, teacherId?: string) {
+    if (isStaticHostOrUnavailable()) {
+      const localRes = localDb.deleteStudent(id);
+      syncService.notifyDataChange();
+      return localRes;
+    }
+
     const url = teacherId
       ? `/api/students/${encodeURIComponent(id)}?teacherId=${encodeURIComponent(teacherId)}`
       : `/api/students/${encodeURIComponent(id)}`;
 
     try {
       const res = await fetch(url, { method: 'DELETE' });
-      const data = await res.json();
-      if (!res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        markApiAvailable();
+        const current = localDb.getStudents();
+        const updated = current.filter((s) => s.id !== id && s.studentId !== id);
+        localStorage.setItem('amani_students', JSON.stringify(updated));
+        syncService.notifyDataChange();
+        return data;
+      }
+
+      if (!res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
         throw new Error(data.error || data.message || 'Failed to remove student');
       }
-      const current = localDb.getStudents();
-      const updated = current.filter((s) => s.id !== id && s.studentId !== id);
-      localStorage.setItem('amani_students', JSON.stringify(updated));
+
+      markApiUnavailable();
+      const localRes = localDb.deleteStudent(id);
       syncService.notifyDataChange();
-      return data;
+      return localRes;
     } catch (err: any) {
-      const isNetworkError =
-        err.name === 'TypeError' ||
-        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
-      if (isNetworkError) {
-        const localRes = localDb.deleteStudent(id);
-        syncService.queueOutboxItem({
-          type: 'STUDENT',
-          action: 'DELETE',
-          payload: { id, teacherId },
-        });
-        syncService.notifyDataChange();
-        return localRes;
-      }
-      throw err;
+      markApiUnavailable();
+      const localRes = localDb.deleteStudent(id);
+      syncService.notifyDataChange();
+      return localRes;
     }
   },
 
@@ -531,42 +605,48 @@ export const api = {
   },
 
   async recordAttendance(payload: Partial<AttendanceSession>) {
+    if (isStaticHostOrUnavailable()) {
+      const localRes = localDb.recordAttendance(payload);
+      syncService.notifyDataChange();
+      return localRes;
+    }
+
     try {
       const res = await fetch('/api/attendance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || data.message || 'Failed to record attendance');
-      }
-      if (data.session) {
-        const current = localDb.getAttendance();
-        const idx = current.findIndex((s) => s.id === data.session.id);
-        if (idx >= 0) current[idx] = data.session;
-        else current.unshift(data.session);
-        localStorage.setItem('amani_attendance', JSON.stringify(current));
-        syncService.notifyDataChange();
-      }
-      return data;
-    } catch (err: any) {
-      const isNetworkError =
-        err.name === 'TypeError' ||
-        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
-      if (isNetworkError) {
-        const localRes = localDb.recordAttendance(payload);
-        if (localRes.session) {
-          syncService.queueOutboxItem({
-            type: 'ATTENDANCE',
-            action: 'CREATE',
-            payload: localRes.session,
-          });
+
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        markApiAvailable();
+        if (data.session) {
+          const current = localDb.getAttendance();
+          const idx = current.findIndex((s) => s.id === data.session.id);
+          if (idx >= 0) current[idx] = data.session;
+          else current.unshift(data.session);
+          localStorage.setItem('amani_attendance', JSON.stringify(current));
           syncService.notifyDataChange();
         }
-        return localRes;
+        return data;
       }
-      throw err;
+
+      if (!res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        throw new Error(data.error || data.message || 'Failed to record attendance');
+      }
+
+      markApiUnavailable();
+      const localRes = localDb.recordAttendance(payload);
+      syncService.notifyDataChange();
+      return localRes;
+    } catch (err: any) {
+      markApiUnavailable();
+      const localRes = localDb.recordAttendance(payload);
+      syncService.notifyDataChange();
+      return localRes;
     }
   },
 
@@ -617,48 +697,50 @@ export const api = {
       recommendedAction?: string;
     }>;
   }) {
+    if (isStaticHostOrUnavailable()) {
+      const localRes = localDb.saveBatchMarks(payload);
+      syncService.notifyDataChange();
+      return localRes;
+    }
+
     try {
       const res = await fetch('/api/marks/batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || data.message || 'Failed to submit marks to central database');
-      }
-      if (data.results && Array.isArray(data.results)) {
-        const current = localDb.getMarks();
-        for (const item of data.results) {
-          const idx = current.findIndex((m) => m.id === item.id);
-          if (idx >= 0) current[idx] = item;
-          else current.push(item);
-        }
-        localStorage.setItem('amani_marks', JSON.stringify(current));
-        syncService.notifyDataChange();
-      }
-      return data;
-    } catch (err: any) {
-      const isNetworkError =
-        err.name === 'TypeError' ||
-        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
-      if (isNetworkError) {
-        const localRes = localDb.saveBatchMarks(payload);
-        const marks = localDb.getMarks({
-          classId: payload.classId,
-          subjectId: payload.subjectId,
-        });
-        if (marks && marks.length > 0) {
-          syncService.queueOutboxItem({
-            type: 'MARK',
-            action: 'CREATE',
-            payload: marks,
-          });
+
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        markApiAvailable();
+        if (data.results && Array.isArray(data.results)) {
+          const current = localDb.getMarks();
+          for (const item of data.results) {
+            const idx = current.findIndex((m) => m.id === item.id);
+            if (idx >= 0) current[idx] = item;
+            else current.push(item);
+          }
+          localStorage.setItem('amani_marks', JSON.stringify(current));
           syncService.notifyDataChange();
         }
-        return localRes;
+        return data;
       }
-      throw err;
+
+      if (!res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        throw new Error(data.error || data.message || 'Failed to submit marks to central database');
+      }
+
+      markApiUnavailable();
+      const localRes = localDb.saveBatchMarks(payload);
+      syncService.notifyDataChange();
+      return localRes;
+    } catch (err: any) {
+      markApiUnavailable();
+      const localRes = localDb.saveBatchMarks(payload);
+      syncService.notifyDataChange();
+      return localRes;
     }
   },
 
@@ -839,110 +921,123 @@ export const api = {
   },
 
   async createAssignment(payload: Partial<Assignment>) {
+    if (isStaticHostOrUnavailable()) {
+      const localRes = localDb.createAssignment(payload);
+      syncService.notifyDataChange();
+      return localRes;
+    }
+
     try {
       const res = await fetch('/api/assignments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || data.message || 'Failed to create assignment');
-      }
-      if (data.assignment) {
-        const current = localDb.getAssignments();
-        const idx = current.findIndex((a) => a.id === data.assignment.id);
-        if (idx >= 0) current[idx] = data.assignment;
-        else current.unshift(data.assignment);
-        localStorage.setItem('amani_assignments', JSON.stringify(current));
-        syncService.notifyDataChange();
-      }
-      return data;
-    } catch (err: any) {
-      const isNetworkError =
-        err.name === 'TypeError' ||
-        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
-      if (isNetworkError) {
-        const localRes = localDb.createAssignment(payload);
-        if (localRes.assignment) {
-          syncService.queueOutboxItem({
-            type: 'ASSIGNMENT',
-            action: 'CREATE',
-            payload: localRes.assignment,
-          });
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        markApiAvailable();
+        if (data.assignment) {
+          const current = localDb.getAssignments();
+          const idx = current.findIndex((a) => a.id === data.assignment.id);
+          if (idx >= 0) current[idx] = data.assignment;
+          else current.unshift(data.assignment);
+          localStorage.setItem('amani_assignments', JSON.stringify(current));
           syncService.notifyDataChange();
         }
-        return localRes;
+        return data;
       }
-      throw err;
+      if (!res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        throw new Error(data.error || data.message || 'Failed to create assignment');
+      }
+      markApiUnavailable();
+      const localRes = localDb.createAssignment(payload);
+      syncService.notifyDataChange();
+      return localRes;
+    } catch (err: any) {
+      markApiUnavailable();
+      const localRes = localDb.createAssignment(payload);
+      syncService.notifyDataChange();
+      return localRes;
     }
   },
 
   async updateAssignment(id: string, payload: Partial<Assignment>) {
+    if (isStaticHostOrUnavailable()) {
+      const localRes = localDb.updateAssignment(id, payload);
+      syncService.notifyDataChange();
+      return localRes;
+    }
+
     try {
       const res = await fetch(`/api/assignments/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (!res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        markApiAvailable();
+        if (data.assignment) {
+          const current = localDb.getAssignments();
+          const idx = current.findIndex((a) => a.id === id);
+          if (idx >= 0) current[idx] = data.assignment;
+          localStorage.setItem('amani_assignments', JSON.stringify(current));
+          syncService.notifyDataChange();
+        }
+        return data;
+      }
+      if (!res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
         throw new Error(data.error || data.message || 'Failed to update assignment');
       }
-      if (data.assignment) {
-        const current = localDb.getAssignments();
-        const idx = current.findIndex((a) => a.id === id);
-        if (idx >= 0) current[idx] = data.assignment;
-        localStorage.setItem('amani_assignments', JSON.stringify(current));
-        syncService.notifyDataChange();
-      }
-      return data;
+      markApiUnavailable();
+      const localRes = localDb.updateAssignment(id, payload);
+      syncService.notifyDataChange();
+      return localRes;
     } catch (err: any) {
-      const isNetworkError =
-        err.name === 'TypeError' ||
-        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
-      if (isNetworkError) {
-        const localRes = localDb.updateAssignment(id, payload);
-        syncService.queueOutboxItem({
-          type: 'ASSIGNMENT',
-          action: 'UPDATE',
-          payload: { id, ...payload },
-        });
-        syncService.notifyDataChange();
-        return localRes;
-      }
-      throw err;
+      markApiUnavailable();
+      const localRes = localDb.updateAssignment(id, payload);
+      syncService.notifyDataChange();
+      return localRes;
     }
   },
 
   async deleteAssignment(id: string, teacherId?: string) {
+    if (isStaticHostOrUnavailable()) {
+      const localRes = localDb.deleteAssignment(id, teacherId);
+      syncService.notifyDataChange();
+      return localRes;
+    }
+
     const url = teacherId ? `/api/assignments/${id}?teacherId=${encodeURIComponent(teacherId)}` : `/api/assignments/${id}`;
     try {
       const res = await fetch(url, { method: 'DELETE' });
-      const data = await res.json();
-      if (!res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        markApiAvailable();
+        const current = localDb.getAssignments();
+        const updated = current.filter((a) => a.id !== id);
+        localStorage.setItem('amani_assignments', JSON.stringify(updated));
+        syncService.notifyDataChange();
+        return data;
+      }
+      if (!res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
         throw new Error(data.error || data.message || 'Failed to delete assignment');
       }
-      const current = localDb.getAssignments();
-      const updated = current.filter((a) => a.id !== id);
-      localStorage.setItem('amani_assignments', JSON.stringify(updated));
+      markApiUnavailable();
+      const localRes = localDb.deleteAssignment(id, teacherId);
       syncService.notifyDataChange();
-      return data;
+      return localRes;
     } catch (err: any) {
-      const isNetworkError =
-        err.name === 'TypeError' ||
-        (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
-      if (isNetworkError) {
-        const localRes = localDb.deleteAssignment(id, teacherId);
-        syncService.queueOutboxItem({
-          type: 'ASSIGNMENT',
-          action: 'DELETE',
-          payload: { id, teacherId },
-        });
-        syncService.notifyDataChange();
-        return localRes;
-      }
-      throw err;
+      markApiUnavailable();
+      const localRes = localDb.deleteAssignment(id, teacherId);
+      syncService.notifyDataChange();
+      return localRes;
     }
   },
 

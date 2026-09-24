@@ -171,15 +171,36 @@ class CentralSyncService {
 
   public async checkStatusAndSync(): Promise<void> {
     if (this.isSyncing) return;
+
+    if (typeof window !== 'undefined') {
+      const host = window.location.hostname.toLowerCase();
+      if (
+        host.includes('vercel.app') ||
+        host.includes('netlify.app') ||
+        host.includes('github.io') ||
+        host.includes('pages.dev')
+      ) {
+        this.isOnline = false;
+        this.notifyListeners();
+        return;
+      }
+    }
+
     try {
       const res = await fetch('/api/sync/status', {
         headers: { 'Cache-Control': 'no-cache' },
       });
-      if (!res.ok) return;
+      const contentType = res.headers.get('content-type') || '';
+      if (!res.ok || !contentType.includes('application/json')) {
+        this.isOnline = false;
+        this.notifyListeners();
+        return;
+      }
       const data = await res.json();
       this.isOnline = true;
 
-      const serverLastModified = Number(data.dbLastModified) || 0;
+      const serverLastModified =
+        Date.parse(data.lastModified || data.dbLastModified || data.serverTimestamp || '') || 0;
       const localOutbox = this.getOutbox();
 
       // If server has newer data or we have outbox items to push, trigger sync
@@ -195,6 +216,21 @@ class CentralSyncService {
 
   public async syncNow(): Promise<boolean> {
     if (this.isSyncing) return false;
+
+    if (typeof window !== 'undefined') {
+      const host = window.location.hostname.toLowerCase();
+      if (
+        host.includes('vercel.app') ||
+        host.includes('netlify.app') ||
+        host.includes('github.io') ||
+        host.includes('pages.dev')
+      ) {
+        this.isOnline = false;
+        this.notifyListeners();
+        return false;
+      }
+    }
+
     this.isSyncing = true;
     this.notifyListeners();
 
@@ -240,57 +276,65 @@ class CentralSyncService {
         body: JSON.stringify(syncPayload),
       });
 
-      if (res.ok) {
-        const result = await res.json();
-        this.isOnline = true;
-        this.lastServerModified = Number(result.serverTimestamp) || Date.now();
-        this.lastSyncedAt = new Date();
-
-        // Update local storage caches with canonical data from the central database
-        if (result.students && Array.isArray(result.students)) {
-          localStorage.setItem('amani_students', JSON.stringify(result.students));
-        }
-        if (result.marks && Array.isArray(result.marks)) {
-          localStorage.setItem('amani_marks', JSON.stringify(result.marks));
-        }
-        if (result.attendance && Array.isArray(result.attendance)) {
-          localStorage.setItem('amani_attendance', JSON.stringify(result.attendance));
-        }
-        if (result.assignments && Array.isArray(result.assignments)) {
-          localStorage.setItem('amani_assignments', JSON.stringify(result.assignments));
-        }
-
-        // Clear flushed outbox
-        this.saveOutbox([]);
-
-        // Notify broadcast channel for other tabs on this device
-        try {
-          this.broadcastChannel?.postMessage({
-            type: 'SYNC_COMPLETED',
-            timestamp: this.lastServerModified,
-          });
-        } catch {}
-
-        this.notifyDataChange();
-        return true;
-      } else {
-        // Fallback: pull directly if push had an issue
-        const pullRes = await fetch('/api/sync/pull');
-        if (pullRes.ok) {
-          const pullData = await pullRes.json();
-          this.isOnline = true;
-          this.lastServerModified = Number(pullData.dbLastModified) || Date.now();
-          this.lastSyncedAt = new Date();
-
-          if (pullData.students) localStorage.setItem('amani_students', JSON.stringify(pullData.students));
-          if (pullData.marks) localStorage.setItem('amani_marks', JSON.stringify(pullData.marks));
-          if (pullData.attendance) localStorage.setItem('amani_attendance', JSON.stringify(pullData.attendance));
-          if (pullData.assignments) localStorage.setItem('amani_assignments', JSON.stringify(pullData.assignments));
-
-          this.notifyDataChange();
-          return true;
-        }
+      const contentType = res.headers.get('content-type') || '';
+      if (!res.ok || !contentType.includes('application/json')) {
+        this.isOnline = false;
+        this.isSyncing = false;
+        this.notifyListeners();
+        return false;
       }
+
+      const result = await res.json();
+      this.isOnline = true;
+      this.lastServerModified =
+        Date.parse(result.lastModified || result.serverTimestamp || result.dbLastModified || '') || Date.now();
+      this.lastSyncedAt = new Date();
+
+      // If server provided students array, update cache
+      if (result.students && Array.isArray(result.students) && result.students.length > 0) {
+        localStorage.setItem('amani_students', JSON.stringify(result.students));
+      } else {
+        // If server didn't include students in push response, do a quick pull
+        try {
+          const pullRes = await fetch('/api/sync/pull');
+          const pullContentType = pullRes.headers.get('content-type') || '';
+          if (pullRes.ok && pullContentType.includes('application/json')) {
+            const pullData = await pullRes.json();
+            if (pullData.students && Array.isArray(pullData.students)) {
+              localStorage.setItem('amani_students', JSON.stringify(pullData.students));
+            }
+            if (pullData.marks && Array.isArray(pullData.marks)) {
+              localStorage.setItem('amani_marks', JSON.stringify(pullData.marks));
+            }
+            if (pullData.attendance && Array.isArray(pullData.attendance)) {
+              localStorage.setItem('amani_attendance', JSON.stringify(pullData.attendance));
+            }
+          }
+        } catch {}
+      }
+      if (result.marks && Array.isArray(result.marks)) {
+        localStorage.setItem('amani_marks', JSON.stringify(result.marks));
+      }
+      if (result.attendance && Array.isArray(result.attendance)) {
+        localStorage.setItem('amani_attendance', JSON.stringify(result.attendance));
+      }
+      if (result.assignments && Array.isArray(result.assignments)) {
+        localStorage.setItem('amani_assignments', JSON.stringify(result.assignments));
+      }
+
+      // Clear flushed outbox
+      this.saveOutbox([]);
+
+      // Notify broadcast channel for other tabs on this device
+      try {
+        this.broadcastChannel?.postMessage({
+          type: 'SYNC_COMPLETED',
+          timestamp: this.lastServerModified,
+        });
+      } catch {}
+
+      this.notifyDataChange();
+      return true;
     } catch (err) {
       console.warn('Sync attempt encountered offline or network error:', err);
       this.isOnline = false;

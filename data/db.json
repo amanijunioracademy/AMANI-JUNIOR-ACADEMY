@@ -1681,6 +1681,86 @@
       "registeredBy": "Mr. Josephat Kobe",
       "registeredByTeacherId": "tch-josephat",
       "createdAt": "2026-01-08T08:00:00Z"
+    },
+    {
+      "id": "stu-00025",
+      "studentId": "STU-00025",
+      "admissionNumber": "ADM-2024-089",
+      "fullName": "JOHN OTIENO",
+      "class": "Grade 7A (JSS)",
+      "grade": "Grade 7",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "createdAt": "2026-01-05T08:00:00Z",
+      "guardianName": "George Otieno",
+      "guardianPhone": "0722112233"
+    },
+    {
+      "id": "stu-00026",
+      "studentId": "STU-00026",
+      "admissionNumber": "ADM-2024-090",
+      "fullName": "FAITH WANJIKU",
+      "class": "Grade 7A (JSS)",
+      "grade": "Grade 7",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "createdAt": "2026-01-05T08:00:00Z",
+      "guardianName": "Mary Wanjiku",
+      "guardianPhone": "0722112234"
+    },
+    {
+      "id": "stu-00027",
+      "studentId": "STU-00027",
+      "admissionNumber": "ADM-2024-091",
+      "fullName": "BRIAN KIPROP",
+      "class": "Grade 7A (JSS)",
+      "grade": "Grade 7",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "createdAt": "2026-01-05T08:00:00Z",
+      "guardianName": "Kiprop Kimutai",
+      "guardianPhone": "0722112235"
+    },
+    {
+      "id": "stu-00028",
+      "studentId": "STU-00028",
+      "admissionNumber": "ADM-2024-092",
+      "fullName": "MERCY CHERONO",
+      "class": "Grade 7A (JSS)",
+      "grade": "Grade 7",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "createdAt": "2026-01-05T08:00:00Z",
+      "guardianName": "Cherono Bett",
+      "guardianPhone": "0722112236"
+    },
+    {
+      "id": "stu-00029",
+      "studentId": "STU-00029",
+      "admissionNumber": "ADM-2024-093",
+      "fullName": "KEVIN BARASA",
+      "class": "Grade 8 Champions",
+      "grade": "Grade 8",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "M",
+      "createdAt": "2026-01-05T08:00:00Z"
+    },
+    {
+      "id": "stu-00030",
+      "studentId": "STU-00030",
+      "admissionNumber": "ADM-2024-094",
+      "fullName": "SHARON AKINYI",
+      "class": "Grade 8 Champions",
+      "grade": "Grade 8",
+      "academicYear": "2026",
+      "status": "ACTIVE",
+      "gender": "F",
+      "createdAt": "2026-01-05T08:00:00Z"
     }
   ],
   "learners": [],
@@ -2114,6 +2194,24 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1790178715548-727",
+      "userId": "usr-sys",
+      "userName": "Staff Member",
+      "userRole": "TEACHER",
+      "action": "Deleted Student Record",
+      "details": "Removed Amani Test Grade 5 Learner (STU-00031, Adm: ADM-2026-TESTG5) from the central database.",
+      "timestamp": "2026-09-23T15:51:55.548Z"
+    },
+    {
+      "id": "log-1790178708610-19",
+      "userId": "usr-sys",
+      "userName": "Mr. Josephat Kobe",
+      "userRole": "TEACHER",
+      "action": "Registered New Student",
+      "details": "Added Amani Test Grade 5 Learner to Grade 5 Victors with unique ID STU-00031.",
+      "timestamp": "2026-09-23T15:51:48.610Z"
+    },
     {
       "id": "log-1789969552359-555",
       "userId": "usr-sys",
@@ -2870,7 +2968,7 @@
   ],
   "analytics": {
     "totalVisitors": 1420,
-    "totalPageViews": 4140,
+    "totalPageViews": 4142,
     "totalChatbotQueries": 280,
     "pageViewsByPath": {
       "/": 1650,
